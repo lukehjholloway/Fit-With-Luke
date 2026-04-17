@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dancer Nutrition Calculator — Fit With Luke</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --teal: #1D9E75; --teal-dark: #0F6E56; --teal-light: #E1F5EE; --teal-text: #085041;
+  --coral: #D85A30; --amber: #BA7517;
+  --bg: #0D0D0D; --surface: #161616; --surface2: #1E1E1E; --surface3: #252525;
+  --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.14);
+  --text: #F0EDE8; --text2: #A09C96; --text3: #6B6762;
+  --radius: 12px; --radius-sm: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+.hero { text-align: center; padding: 3rem 1.5rem 2rem; border-bottom: 0.5px solid var(--border); }
+.logo { font-size: 13px; font-weight: 600; letter-spacing: 0.12em; color: var(--teal); text-transform: uppercase; margin-bottom: 1rem; }
+.hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin-bottom: 0.75rem; }
+.hero h1 span { color: var(--teal); }
+.hero p { font-size: 15px; color: var(--text2); max-width: 480px; margin: 0 auto; line-height: 1.7; }
+.container { max-width: 680px; margin: 0 auto; padding: 1.5rem; }
+.card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; }
+.card-title { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 1.25rem; }
+.unit-toggle { display: flex; background: var(--surface2); border-radius: var(--radius-sm); padding: 3px; width: fit-content; margin-bottom: 1.25rem; }
+.unit-btn { padding: 0.4rem 1.1rem; font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; border: none; background: transparent; color: var(--text2); border-radius: 6px; transition: all 0.2s; }
+.unit-btn.active { background: var(--teal); color: #fff; font-weight: 500; }
+label { font-size: 13px; color: var(--text2); display: block; margin-bottom: 6px; }
+input[type=number], input[type=text], input[type=date], select {
+  width: 100%; background: var(--surface2); border: 0.5px solid var(--border2);
+  border-radius: var(--radius-sm); padding: 0.6rem 0.85rem; font-size: 14px;
+  font-family: 'DM Sans', sans-serif; color: var(--text); outline: none; transition: border-color 0.2s;
+}
+input:focus, select:focus { border-color: var(--teal); }
+select option { background: var(--surface2); }
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.g4 { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 10px; }
+.field { margin-bottom: 14px; }
+.goal-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; }
+.gb { flex: 1; min-width: 90px; padding: 0.6rem 0.5rem; border: 0.5px solid var(--border2); border-radius: var(--radius-sm); background: transparent; font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; color: var(--text2); text-align: center; transition: all 0.2s; }
+.gb:hover { border-color: var(--teal); color: var(--text); }
+.gb.active { background: rgba(29,158,117,0.12); border-color: var(--teal); color: #9FE1CB; font-weight: 500; }
+.goal-weight-block { border: 0.5px solid var(--teal); border-radius: var(--radius-sm); padding: 1rem; margin-top: 0.75rem; background: rgba(29,158,117,0.06); }
+.goal-weight-block label { color: #5DCAA5; }
+.safety-safe { background: rgba(29,158,117,0.1); border: 0.5px solid var(--teal); border-radius: var(--radius-sm); padding: 0.75rem 1rem; font-size: 13px; color: #9FE1CB; margin-top: 0.75rem; line-height: 1.6; }
+.safety-warn { background: rgba(239,159,39,0.1); border: 0.5px solid #EF9F27; border-radius: var(--radius-sm); padding: 0.75rem 1rem; font-size: 13px; color: #FAC775; margin-top: 0.75rem; line-height: 1.6; }
+.safety-danger { background: rgba(226,75,74,0.1); border: 0.5px solid #E24B4A; border-radius: var(--radius-sm); padding: 0.75rem 1rem; font-size: 13px; color: #F09595; margin-top: 0.75rem; line-height: 1.6; }
+.btn-primary { width: 100%; padding: 0.9rem; background: var(--teal); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; margin-top: 0.75rem; transition: background 0.2s; }
+.btn-primary:hover { background: var(--teal-dark); }
+.btn-primary:disabled { background: var(--surface3); color: var(--text3); cursor: not-allowed; }
+.btn-outline { background: transparent; border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 0.55rem 1rem; font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; color: var(--text2); transition: all 0.2s; white-space: nowrap; }
+.btn-outline:hover { border-color: var(--teal); color: var(--teal); }
+.hidden { display: none; }
+.divider { border: none; border-top: 0.5px solid var(--border); margin: 1.25rem 0; }
+.metric-card { background: var(--surface2); border-radius: var(--radius-sm); padding: 1rem 0.75rem; text-align: center; }
+.metric-label { font-size: 11px; color: var(--text3); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+.metric-value { font-size: 22px; font-weight: 600; }
+.metric-unit { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.bar-wrap { background: var(--surface3); border-radius: 4px; height: 7px; margin-top: 5px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+.macro-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.timeline-inner { background: var(--surface2); border-radius: var(--radius-sm); padding: 0.75rem 1rem; margin-top: 0.75rem; }
+.timeline-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; }
+.timeline-row:last-child { border-bottom: none; }
+.pill { display: inline-flex; align-items: center; gap: 6px; background: var(--surface2); border: 0.5px solid var(--border2); border-radius: 20px; padding: 6px 13px; font-size: 13px; margin: 3px; cursor: pointer; color: var(--text2); transition: all 0.15s; }
+.pill:hover { border-color: var(--teal); color: var(--text); }
+.pill.sel { background: rgba(29,158,117,0.12); border-color: var(--teal); color: #9FE1CB; }
+.pill-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border2); flex-shrink: 0; transition: background 0.15s; }
+.pill.sel .pill-dot { background: var(--teal); }
+.add-row { display: flex; gap: 8px; margin-top: 10px; }
+.add-row input { flex: 1; }
+.meal-card { background: var(--surface2); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 0.75rem; }
+.meal-time { font-size: 11px; color: var(--teal); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+.meal-name { font-size: 15px; font-weight: 500; margin-bottom: 6px; }
+.meal-items { font-size: 13px; color: var(--text2); line-height: 1.7; }
+.tag { display: inline-block; font-size: 11px; padding: 2px 9px; border-radius: 20px; margin-right: 4px; margin-top: 6px; }
+.tt { background: rgba(29,158,117,0.15); color: #9FE1CB; }
+.tc { background: rgba(216,90,48,0.15); color: #F0997B; }
+.ta { background: rgba(186,117,23,0.15); color: #FAC775; }
+.loc-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.loc-row input { flex: 1; }
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
+.spinner-teal { border-color: rgba(29,158,117,0.3); border-top-color: var(--teal); }
+@keyframes spin { to { transform: rotate(360deg); } }
+.status-msg { font-size: 13px; color: var(--text2); padding: 0.5rem 0; min-height: 28px; }
+.water-bar { display: flex; align-items: center; gap: 10px; margin-top: 0.5rem; }
+.water-drops { display: flex; gap: 4px; }
+.drop { width: 10px; height: 14px; background: var(--surface3); border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; transition: background 0.3s; }
+.drop.filled { background: #378ADD; }
+footer { text-align: center; padding: 2rem 1.5rem; border-top: 0.5px solid var(--border); margin-top: 1rem; }
+footer p { font-size: 12px; color: var(--text3); line-height: 1.8; }
+footer a { color: var(--teal); text-decoration: none; }
+@media (max-width: 480px) {
+  .g4 { grid-template-columns: repeat(2,1fr); }
+  .g3 { grid-template-columns: 1fr 1fr; }
+  .hero { padding: 2rem 1rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="logo">Fit With Luke</div>
+  <h1>'Ori Tahiti <span>Dancer</span><br/>Nutrition Calculator</h1>
+  <p>Personalized calorie targets, macros, goal weight timelines, and meal plans from restaurants in your city — built for Polynesian dancers worldwide.</p>
+</div>
+
+<div class="container">
+
+<div class="card">
+  <div class="card-title">Your Profile</div>
+  <div>
+    <label style="margin-bottom:8px;">Units</label>
+    <div class="unit-toggle">
+      <button class="unit-btn active" id="u-imp" onclick="setUnits('imperial')">Imperial (lbs / ft)</button>
+      <button class="unit-btn" id="u-met" onclick="setUnits('metric')">Metric (kg / cm)</button>
+    </div>
+  </div>
+  <div class="loc-row">
+    <input type="text" id="city" placeholder="City, Country (e.g. Seattle, USA)"/>
+    <button class="btn-outline" onclick="detectLocation()">Detect location</button>
+  </div>
+  <div class="g2">
+    <div><label>Age</label><input type="number" id="age" placeholder="25" min="14" max="80"/></div>
+    <div><label>Sex</label><select id="sex"><option value="female">Female</option><option value="male">Male</option></select></div>
+  </div>
+  <div id="imp-fields">
+    <div class="g3">
+      <div><label>Weight (lbs)</label><input type="number" id="wlbs" placeholder="130"/></div>
+      <div><label>Height (ft)</label><input type="number" id="hft" placeholder="5" min="3" max="7"/></div>
+      <div><label>Height (in)</label><input type="number" id="hin" placeholder="4" min="0" max="11"/></div>
+    </div>
+  </div>
+  <div id="met-fields" class="hidden">
+    <div class="g2">
+      <div><label>Weight (kg)</label><input type="number" id="wkg" placeholder="60"/></div>
+      <div><label>Height (cm)</label><input type="number" id="hcm" placeholder="163"/></div>
+    </div>
+  </div>
+  <div class="field">
+    <label>Activity level (outside dance)</label>
+    <select id="activity">
+      <option value="1.2">Sedentary</option>
+      <option value="1.375">Lightly active (1–2x/week)</option>
+      <option value="1.55" selected>Moderately active (3–4x/week)</option>
+      <option value="1.725">Very active (5+/week)</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>'Ori Tahiti / Polynesian dance practice</label>
+    <select id="danceFreq">
+      <option value="0">No practice this week</option>
+      <option value="1">1 session/week (~60 min)</option>
+      <option value="2" selected>2–3 sessions/week</option>
+      <option value="3">4–5 sessions/week</option>
+      <option value="4">Daily / competition prep</option>
+    </select>
+  </div>
+  <label style="margin-bottom:10px;display:block;">Goal</label>
+  <div class="goal-btns">
+    <button class="gb active" onclick="setGoal('maintain',this)">Maintain</button>
+    <button class="gb" onclick="setGoal('lose',this)">Lose weight</button>
+    <button class="gb" onclick="setGoal('gain',this)">Build muscle</button>
+    <button class="gb" onclick="setGoal('performance',this)">Peak performance</button>
+  </div>
+  <div id="goal-weight-section" class="hidden">
+    <div class="goal-weight-block">
+      <div class="g2" style="margin-bottom:10px;">
+        <div><label id="gw-label">Goal weight (lbs)</label><input type="number" id="goal-weight" placeholder="120"/></div>
+        <div><label>Target date</label><input type="date" id="goal-date"/></div>
+      </div>
+      <div style="font-size:12px;color:#5DCAA5;line-height:1.6;">Safe rate for dancers: 0.5–1 kg (1–2 lbs) per week. Your calories will be adjusted to hit your goal by that date.</div>
+    </div>
+  </div>
+  <button class="btn-primary" onclick="calculate()">Calculate my nutrition plan</button>
+</div>
+
+<div id="results" class="hidden">
+  <div class="card">
+    <div class="card-title">Daily Calorie Targets</div>
+    <div class="g4" id="metric-cards"></div>
+    <div id="goal-timeline" class="hidden">
+      <div class="divider"></div>
+      <div class="card-title" style="margin-bottom:0.5rem;">Weight Goal Timeline</div>
+      <div id="timeline-content"></div>
+    </div>
+    <div class="divider"></div>
+    <div class="card-title" style="margin-bottom:0.75rem;">Daily Macros</div>
+    <div id="macros-block"></div>
+    <div class="divider"></div>
+    <div style="font-size:13px;color:var(--text2);">Daily water intake</div>
+    <div class="water-bar">
+      <div class="water-drops" id="water-drops"></div>
+      <span style="font-size:14px;font-weight:500;" id="water-rec">—</span>
+    </div>
+    <div style="font-size:12px;color:var(--text3);margin-top:4px;">Add 500ml per hour of dance practice</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Restaurants near <span id="city-label">you</span></div>
+    <div class="status-msg" id="rest-status"></div>
+    <div id="rest-pills" style="margin-bottom:8px;"></div>
+    <div class="add-row">
+      <input type="text" id="custom-rest" placeholder="Add a restaurant manually..."/>
+      <button class="btn-outline" onclick="addCustom()">Add</button>
+    </div>
+    <button class="btn-primary" id="meal-btn" style="margin-top:1rem;" onclick="buildMealPlan()">Build my meal plan</button>
+  </div>
+
+  <div id="mealplan-wrap" class="hidden">
+    <div class="card">
+      <div class="card-title">Your Personalized Meal Plan</div>
+      <div id="mealplan-output"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<footer>
+  <p>Built for 'Ori Tahiti &amp; Polynesian dancers worldwide.<br/>
+  <a href="https://fitwithluke.com" target="_blank">fitwithluke.com</a> &bull; San Diego, CA<br/>
+  <span style="color:var(--text3);font-size:11px;">Uses Mifflin-St Jeor BMR. Not a substitute for medical advice.</span></p>
+</footer>
+
+<script>
+const API_URL = 'https://fwl-api.vercel.app/api/claude';
+let goalMode='maintain',unitMode='imperial',userCalories=0,userCity='';
+let selectedRests=new Set(),allRests=[];
+
+function setUnits(u){
+  unitMode=u;
+  document.getElementById('u-imp').classList.toggle('active',u==='imperial');
+  document.getElementById('u-met').classList.toggle('active',u==='metric');
+  document.getElementById('imp-fields').classList.toggle('hidden',u==='metric');
+  document.getElementById('met-fields').classList.toggle('hidden',u==='imperial');
+  document.getElementById('gw-label').textContent=u==='metric'?'Goal weight (kg)':'Goal weight (lbs)';
+}
+
+function setGoal(g,el){
+  goalMode=g;
+  document.querySelectorAll('.gb').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('goal-weight-section').classList.toggle('hidden',!(g==='lose'||g==='gain'));
+  if(g==='lose') document.getElementById('goal-date').min=new Date().toISOString().split('T')[0];
+}
+
+function detectLocation(){
+  if(!navigator.geolocation){alert('Please type your city.');return;}
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    try{
+      const r=await fetch('https://nominatim.openstreetmap.org/reverse?lat='+pos.coords.latitude+'&lon='+pos.coords.longitude+'&format=json&accept-language=en');
+      const d=await r.json();
+      const city=d.address.city||d.address.town||d.address.village||'';
+      const country=d.address.country||'';
+      document.getElementById('city').value=city&&country?city+', '+country:city||country;
+    }catch(e){alert('Could not detect. Please type your city.');}
+  },()=>alert('Location access denied. Please type your city.'));
+}
+
+function getKg(){return unitMode==='metric'?+document.getElementById('wkg').value:(+document.getElementById('wlbs').value||0)*0.453592;}
+function getCm(){if(unitMode==='metric')return+document.getElementById('hcm').value;return((+document.getElementById('hft').value||5)*12+(+document.getElementById('hin').value||4))*2.54;}
+function getGoalKg(){const v=+document.getElementById('goal-weight').value;if(!v)return null;return unitMode==='metric'?v:v*0.453592;}
+
+function calculate(){
+  const city=document.getElementById('city').value.trim();
+  const age=+document.getElementById('age').value;
+  const sex=document.getElementById('sex').value;
+  const kg=getKg(),cm=getCm();
+  const act=+document.getElementById('activity').value;
+  const dance=+document.getElementById('danceFreq').value;
+  if(!city){alert('Please enter your city and country.');return;}
+  if(!age||!kg||!cm){alert('Please fill in age, weight, and height.');return;}
+  userCity=city;
+  let bmr=sex==='female'?10*kg+6.25*cm-5*age-161:10*kg+6.25*cm-5*age+5;
+  const danceBurn=Math.round(kg*6.5);
+  const tdeeD=bmr*act+(dance*danceBurn/7);
+  const goalKg=getGoalKg();
+  const goalDateVal=document.getElementById('goal-date').value;
+  let eat=Math.round(tdeeD),deficitNote='',timelineHTML='',showTimeline=false;
+
+  if((goalMode==='lose'||goalMode==='gain')&&goalKg&&goalDateVal){
+    const today=new Date();today.setHours(0,0,0,0);
+    const target=new Date(goalDateVal);target.setHours(0,0,0,0);
+    const daysLeft=Math.round((target-today)/86400000);
+    const weeksLeft=daysLeft/7;
+    const diffKg=goalKg-kg;
+    const dailyAdj=daysLeft>0?Math.round((diffKg*7700)/daysLeft):0;
+    eat=Math.round(tdeeD+dailyAdj);
+    const wkRate=Math.abs(diffKg/weeksLeft);
+    const wkRateLbs=wkRate/0.453592;
+    const dispGoal=unitMode==='metric'?goalKg.toFixed(1)+' kg':(goalKg/0.453592).toFixed(1)+' lbs';
+    const dispCurr=unitMode==='metric'?kg.toFixed(1)+' kg':(kg/0.453592).toFixed(1)+' lbs';
+    const dispDiff=unitMode==='metric'?Math.abs(diffKg).toFixed(1)+' kg':Math.abs(diffKg/0.453592).toFixed(1)+' lbs';
+    const dispRate=unitMode==='metric'?wkRate.toFixed(2)+' kg/week':wkRateLbs.toFixed(2)+' lbs/week';
+    const sc=wkRate<=1?'safety-safe':wkRate<=1.5?'safety-warn':'safety-danger';
+    const sm=wkRate<=1?'Safe and sustainable rate for an active dancer. Energy and performance stay strong.':wkRate<=1.5?'Slightly aggressive. Consider extending your target date for better performance.':'Exceeds safe limits for active dancers. Extend your goal date to protect muscle and energy.';
+    timelineHTML='<div class="timeline-inner">'
+      +'<div class="timeline-row"><span style="color:var(--text2);">Current weight</span><span style="font-weight:500;">'+dispCurr+'</span></div>'
+      +'<div class="timeline-row"><span style="color:var(--text2);">Goal weight</span><span style="font-weight:500;">'+dispGoal+'</span></div>'
+      +'<div class="timeline-row"><span style="color:var(--text2);">Total to '+(goalMode==='lose'?'lose':'gain')+'</span><span style="font-weight:500;">'+dispDiff+'</span></div>'
+      +'<div class="timeline-row"><span style="color:var(--text2);">Time to goal</span><span style="font-weight:500;">'+daysLeft+' days ('+weeksLeft.toFixed(1)+' wks)</span></div>'
+      +'<div class="timeline-row"><span style="color:var(--text2);">Weekly rate</span><span style="font-weight:500;">'+dispRate+'</span></div>'
+      +'<div class="timeline-row"><span style="color:var(--text2);">Daily '+(dailyAdj<0?'deficit':'surplus')+'</span><span style="font-weight:500;color:'+(dailyAdj<0?'#F0997B':'#9FE1CB')+'">'+Math.abs(dailyAdj)+' kcal/day</span></div>'
+      +'<div class="timeline-row"><span style="color:var(--text2);">Target date</span><span style="font-weight:500;">'+new Date(goalDateVal).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})+'</span></div>'
+      +'</div><div class="'+sc+'">'+sm+'</div>';
+    showTimeline=true;
+    deficitNote=' ('+Math.abs(dailyAdj)+' kcal '+(dailyAdj<0?'deficit':'surplus')+')';
+  } else {
+    eat=goalMode==='lose'?Math.round(tdeeD-350):goalMode==='gain'?Math.round(tdeeD+300):goalMode==='performance'?Math.round(tdeeD+150):Math.round(tdeeD);
+  }
+
+  userCalories=eat;
+  const prot=Math.round(kg*1.6);
+  const fat=Math.round(eat*0.28/9);
+  const carbs=Math.round((eat-prot*4-fat*9)/4);
+  const waterL=+(kg*0.035).toFixed(1);
+
+  document.getElementById('metric-cards').innerHTML=
+    '<div class="metric-card"><div class="metric-label">Eat daily</div><div class="metric-value" style="color:var(--teal);">'+eat.toLocaleString()+'</div><div class="metric-unit">kcal'+(deficitNote?'*':'')+'</div></div>'
+    +'<div class="metric-card"><div class="metric-label">Burn/session</div><div class="metric-value" style="color:var(--coral);">'+Math.round(eat*0.18).toLocaleString()+'</div><div class="metric-unit">kcal target</div></div>'
+    +'<div class="metric-card"><div class="metric-label">Base BMR</div><div class="metric-value">'+Math.round(bmr).toLocaleString()+'</div><div class="metric-unit">kcal/day</div></div>'
+    +'<div class="metric-card"><div class="metric-label">Dance burns</div><div class="metric-value" style="color:var(--amber);">'+danceBurn.toLocaleString()+'</div><div class="metric-unit">kcal/session</div></div>'
+    +(deficitNote?'<div style="grid-column:1/-1;font-size:12px;color:var(--text3);padding-top:4px;">* Adjusted to reach your goal by your target date</div>':'');
+
+  document.getElementById('goal-timeline').classList.toggle('hidden',!showTimeline);
+  if(showTimeline) document.getElementById('timeline-content').innerHTML=timelineHTML;
+
+  document.getElementById('macros-block').innerHTML=[
+    {label:'Protein',val:prot,unit:'g',pct:Math.round(prot*4/eat*100),color:'#1D9E75'},
+    {label:'Carbohydrates',val:Math.max(0,carbs),unit:'g',pct:Math.round(Math.max(0,carbs)*4/eat*100),color:'#BA7517'},
+    {label:'Fat',val:fat,unit:'g',pct:Math.round(fat*9/eat*100),color:'#D85A30'},
+  ].map(m=>'<div class="macro-row"><span style="font-size:13px;">'+m.label+'</span><span style="font-size:13px;font-weight:500;">'+m.val+m.unit+' <span style="color:var(--text3);font-weight:400;">('+m.pct+'%)</span></span></div><div class="bar-wrap"><div class="bar-fill" style="width:'+m.pct+'%;background:'+m.color+';"></div></div>').join('');
+
+  const drops=Math.min(10,Math.round(waterL/0.3));
+  document.getElementById('water-drops').innerHTML=Array.from({length:10},(_,i)=>'<div class="drop '+(i<drops?'filled':'')+'"></div>').join('');
+  document.getElementById('water-rec').textContent=unitMode==='metric'?waterL+'L daily':waterL+'L ('+Math.round(waterL*33.8)+' fl oz) daily';
+  document.getElementById('city-label').textContent=city;
+  document.getElementById('results').classList.remove('hidden');
+  loadRestaurants(city);
+  document.getElementById('results').scrollIntoView({behavior:'smooth'});
+}
+
+async function loadRestaurants(city){
+  const statusEl=document.getElementById('rest-status');
+  document.getElementById('rest-pills').innerHTML='';
+  statusEl.innerHTML='<span class="spinner spinner-teal"></span> Finding restaurants in '+city+'...';
+  try{
+    const response=await fetch(API_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-opus-4-5',
+        max_tokens:800,
+        messages:[{role:'user',content:'List 14 real restaurants, cafes, or fast-casual dining spots that actually exist in or near '+city+'. Include a mix of local favorites and any international chains present there. Focus on places a health-conscious person or dancer might realistically eat. Return ONLY a valid JSON array of name strings. No markdown, no backticks, no explanation. Example: ["Name 1","Name 2"]'}]
+      })
+    });
+    const data=await response.json();
+    const raw=data.content.find(b=>b.type==='text')?.text||'[]';
+    allRests=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    selectedRests=new Set();
+    statusEl.innerHTML='Found <strong style="color:var(--text);">'+allRests.length+' restaurants</strong> in '+city+' — tap to select the ones you eat at:';
+    renderPills();
+  }catch(e){
+    statusEl.innerHTML='Could not load restaurants. Add them manually below.';
+    allRests=[];
+    renderPills();
+  }
+}
+
+function renderPills(){
+  const all=[...new Set([...allRests,...selectedRests])];
+  document.getElementById('rest-pills').innerHTML=all.map(r=>{
+    const s=selectedRests.has(r);
+    const safe=r.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    return '<span class="pill '+(s?'sel':'')+'" onclick="toggleR(this,\''+safe+'\')"><span class="pill-dot"></span>'+r+'</span>';
+  }).join('');
+}
+
+function toggleR(el,name){
+  if(selectedRests.has(name))selectedRests.delete(name);else selectedRests.add(name);
+  el.classList.toggle('sel');
+  el.querySelector('.pill-dot').style.background=selectedRests.has(name)?'var(--teal)':'';
+}
+
+function addCustom(){
+  const inp=document.getElementById('custom-rest');
+  const val=inp.value.trim();if(!val)return;
+  if(!allRests.includes(val))allRests.push(val);
+  selectedRests.add(val);inp.value='';renderPills();
+}
+
+async function buildMealPlan(){
+  if(selectedRests.size===0){alert('Please select at least one restaurant.');return;}
+  const btn=document.getElementById('meal-btn');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Building your meal plan...';
+  const rests=[...selectedRests];
+  const cals=userCalories;
+  try{
+    const response=await fetch(API_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-opus-4-5',
+        max_tokens:1200,
+        messages:[{role:'user',content:'You are a sports nutritionist for Ori Tahiti Polynesian dancers. The client is in '+userCity+'. Create a realistic 1-day meal plan using ONLY these restaurants: '+rests.join(', ')+'. Daily target: '+cals+' kcal. Meal targets: breakfast ~'+Math.round(cals*0.25)+' kcal, lunch ~'+Math.round(cals*0.35)+' kcal, dinner ~'+Math.round(cals*0.30)+' kcal, snack ~'+Math.round(cals*0.10)+' kcal. Prioritize lean protein, complex carbs, omega-3s for joint health. Suggest specific real menu items. Return ONLY a JSON array of 4 meal objects with keys: time (string), restaurant (string), calories (number), items (string with specific order recommendations), tags (array of 2 short benefit labels). No markdown, no backticks, no extra text.'}]
+      })
+    });
+    const data=await response.json();
+    const raw=data.content.find(b=>b.type==='text')?.text||'[]';
+    const meals=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    const tagCls=['tt','tc','ta'];
+    document.getElementById('mealplan-output').innerHTML=meals.map(m=>
+      '<div class="meal-card">'
+      +'<div class="meal-time">'+m.time+'</div>'
+      +'<div class="meal-name">'+m.restaurant+'</div>'
+      +'<div class="meal-items">'+m.items+'</div>'
+      +'<div>'+(m.tags||[]).map((t,i)=>'<span class="tag '+tagCls[i%3]+'">'+t+'</span>').join('')+'</div>'
+      +'</div>'
+    ).join('')+'<div style="font-size:13px;color:var(--text2);margin-top:0.75rem;padding:0.75rem;background:var(--surface2);border-radius:var(--radius-sm);">Estimated total: ~'+meals.reduce((s,m)=>s+Math.round(m.calories),0).toLocaleString()+' kcal &bull; Daily target: '+cals.toLocaleString()+' kcal</div>';
+    document.getElementById('mealplan-wrap').classList.remove('hidden');
+    document.getElementById('mealplan-wrap').scrollIntoView({behavior:'smooth'});
+  }catch(e){
+    alert('Could not generate meal plan. Please try again.');
+  }
+  btn.disabled=false;btn.innerHTML='Rebuild meal plan';
+}
+</script>
+</body>
+</html>
