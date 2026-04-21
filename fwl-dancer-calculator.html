@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Polynesian Dancer Nutrition Calculator — Fit With Luke</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<style>
+:root {
+  --orange:#FF6B00;--orange-dark:#CC5500;--orange-glow:rgba(255,107,0,0.15);
+  --cyan:#00C8E8;--cyan-dark:#009DB8;--cyan-glow:rgba(0,200,232,0.12);
+  --bg:#080808;--surface:#111111;--surface2:#181818;--surface3:#202020;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#F5F2EE;--text2:#C8C4BC;--text3:#8A8680;
+  --radius:12px;--radius-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* HERO */
+.hero{text-align:center;padding:2.5rem 1.5rem 2rem;border-bottom:0.5px solid var(--border);background:radial-gradient(ellipse at top,rgba(255,107,0,0.08) 0%,transparent 60%);}
+.hero-logo{width:100px;height:100px;object-fit:contain;margin-bottom:1rem;border-radius:14px;}
+.hero-eyebrow{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--cyan);border:0.5px solid var(--cyan);border-radius:20px;padding:3px 14px;margin-bottom:1rem;}
+.hero h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(2.2rem,6vw,3.6rem);font-weight:800;line-height:1.0;margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.01em;}
+.hero h1 .o{color:var(--orange);}
+.hero h1 .c{color:var(--cyan);}
+.hero p{font-size:14px;color:var(--text2);max-width:460px;margin:0 auto;line-height:1.7;}
+.hero-tagline{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-top:0.5rem;}
+
+/* LAYOUT */
+.container{max-width:720px;margin:0 auto;padding:1.5rem;}
+
+/* CARDS */
+.card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1rem;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--orange),var(--cyan));opacity:0.6;}
+.card-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:1.25rem;}
+
+/* FORMS */
+.unit-toggle{display:flex;background:var(--surface2);border-radius:var(--radius-sm);padding:3px;width:fit-content;margin-bottom:1.25rem;border:0.5px solid var(--border);}
+.unit-btn{padding:0.4rem 1.1rem;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;background:transparent;color:var(--text3);border-radius:6px;transition:all 0.2s;}
+.unit-btn.active{background:var(--orange);color:#fff;font-weight:500;}
+label{font-size:13px;color:var(--text2);display:block;margin-bottom:6px;}
+input[type=number],input[type=text],input[type=date],select{width:100%;background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:0.65rem 0.85rem;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;}
+input:focus,select:focus{border-color:var(--cyan);}
+select option{background:var(--surface2);}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;}
+.field{margin-bottom:14px;}
+
+/* TOGGLE BUTTONS */
+.toggle-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;}
+.tb{flex:1;min-width:80px;padding:0.55rem 0.4rem;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:transparent;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;color:var(--text2);text-align:center;transition:all 0.2s;}
+.tb:hover{border-color:var(--orange);color:var(--text);}
+.tb.active{background:var(--orange-glow);border-color:var(--orange);color:var(--orange);font-weight:500;}
+
+/* GOAL WEIGHT */
+.goal-weight-block{border:0.5px solid var(--cyan);border-radius:var(--radius-sm);padding:1rem;margin-top:0.75rem;background:var(--cyan-glow);}
+.goal-weight-block label{color:var(--cyan);}
+.safety-safe{background:rgba(0,200,232,0.08);border:0.5px solid var(--cyan);border-radius:var(--radius-sm);padding:0.75rem 1rem;font-size:13px;color:#7ADEEE;margin-top:0.75rem;line-height:1.6;}
+.safety-warn{background:rgba(255,107,0,0.08);border:0.5px solid var(--orange);border-radius:var(--radius-sm);padding:0.75rem 1rem;font-size:13px;color:#FFA060;margin-top:0.75rem;line-height:1.6;}
+.safety-danger{background:rgba(226,75,74,0.08);border:0.5px solid #E24B4A;border-radius:var(--radius-sm);padding:0.75rem 1rem;font-size:13px;color:#F09595;margin-top:0.75rem;line-height:1.6;}
+
+/* BUTTONS */
+.btn-primary{width:100%;padding:0.9rem;background:var(--orange);color:#fff;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;font-family:'Barlow Condensed',sans-serif;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;margin-top:0.75rem;transition:background 0.2s;}
+.btn-primary:hover{background:var(--orange-dark);}
+.btn-primary:disabled{background:var(--surface3);color:var(--text3);cursor:not-allowed;}
+.btn-cyan{width:100%;padding:0.9rem;background:var(--cyan);color:#000;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;font-family:'Barlow Condensed',sans-serif;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;margin-top:0.75rem;transition:background 0.2s;}
+.btn-cyan:hover{background:var(--cyan-dark);}
+.btn-outline{background:transparent;border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:0.55rem 1rem;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;color:var(--text2);transition:all 0.2s;white-space:nowrap;}
+.btn-outline:hover{border-color:var(--cyan);color:var(--cyan);}
+.btn-export{background:transparent;border:0.5px solid var(--orange);border-radius:var(--radius-sm);padding:0.55rem 1.25rem;font-size:13px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;color:var(--orange);transition:all 0.2s;white-space:nowrap;}
+.btn-export:hover{background:var(--orange);color:#fff;}
+.btn-export:disabled{opacity:0.5;cursor:not-allowed;}
+
+/* UTILS */
+.hidden{display:none;}
+.divider{border:none;border-top:0.5px solid var(--border);margin:1.25rem 0;}
+
+/* METRIC CARDS */
+.metric-card{background:var(--surface2);border-radius:var(--radius-sm);padding:1rem 0.75rem;text-align:center;border:0.5px solid var(--border);}
+.metric-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.08em;}
+.metric-value{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800;letter-spacing:0.02em;}
+.metric-unit{font-size:10px;color:var(--text3);margin-top:2px;}
+
+/* MACROS */
+.bar-wrap{background:var(--surface3);border-radius:4px;height:7px;margin-top:5px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;transition:width 0.6s ease;}
+.macro-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+
+/* TIMELINE */
+.timeline-inner{background:var(--surface2);border-radius:var(--radius-sm);padding:0.75rem 1rem;margin-top:0.75rem;border:0.5px solid var(--border);}
+.timeline-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border);font-size:13px;}
+.timeline-row:last-child{border-bottom:none;}
+
+/* RESTAURANT PILLS */
+.pill{display:inline-flex;align-items:center;gap:6px;background:var(--surface2);border:0.5px solid var(--border2);border-radius:20px;padding:6px 13px;font-size:13px;margin:3px;cursor:pointer;color:var(--text2);transition:all 0.15s;}
+.pill:hover{border-color:var(--cyan);color:var(--text);}
+.pill.sel{background:var(--cyan-glow);border-color:var(--cyan);color:var(--cyan);}
+.pill-dot{width:7px;height:7px;border-radius:50%;background:var(--border2);flex-shrink:0;}
+.pill.sel .pill-dot{background:var(--cyan);}
+.add-row{display:flex;gap:8px;margin-top:10px;}
+.add-row input{flex:1;}
+
+/* MEAL BLOCKS */
+.meal-block{background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:1rem;margin-bottom:0.75rem;border-left:2px solid var(--orange);}
+.meal-time{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--orange);font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;}
+.meal-name{font-size:15px;font-weight:500;margin-bottom:6px;}
+.meal-items{font-size:13px;color:#D8D4CC;line-height:1.8;}
+.tag{display:inline-block;font-size:11px;padding:2px 9px;border-radius:20px;margin-right:4px;margin-top:6px;}
+.tt{background:var(--cyan-glow);color:var(--cyan);}
+.tc{background:var(--orange-glow);color:var(--orange);}
+.ta{background:rgba(186,117,23,0.12);color:#FAC775;}
+.tb2{background:rgba(55,138,221,0.12);color:#85B7EB;}
+
+/* GROCERY */
+.grocery-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:0.5px solid var(--border);font-size:13px;color:#C8C4BC;}
+.grocery-item:last-child{border-bottom:none;}
+.grocery-check{width:16px;height:16px;border:0.5px solid var(--border2);border-radius:3px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+.grocery-check.checked{background:var(--orange);border-color:var(--orange);}
+.grocery-category{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--orange);margin:0.75rem 0 0.4rem;}
+
+/* SUPPLEMENTS */
+.supp-row{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:0.5px solid var(--border);font-size:13px;}
+.supp-row:last-child{border-bottom:none;}
+.supp-name{font-weight:500;color:var(--text);}
+.supp-dose{color:#C8C4BC;font-size:12px;margin-top:2px;}
+.supp-time{font-size:11px;color:var(--cyan);background:var(--cyan-glow);padding:2px 8px;border-radius:20px;white-space:nowrap;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.05em;}
+
+/* PROTOCOLS */
+.protocol-item{padding:8px 0;border-bottom:0.5px solid var(--border);font-size:13px;color:#C8C4BC;line-height:1.6;}
+.protocol-item:last-child{border-bottom:none;}
+.protocol-item strong{color:var(--orange);}
+
+/* MISC */
+.loc-row{display:flex;gap:8px;margin-bottom:14px;}
+.loc-row input{flex:1;}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.2);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px;}
+.spinner-cyan{border-color:rgba(0,200,232,0.3);border-top-color:var(--cyan);}
+@keyframes spin{to{transform:rotate(360deg);}}
+.status-msg{font-size:13px;color:var(--text2);padding:0.5rem 0;min-height:28px;}
+.water-bar{display:flex;align-items:center;gap:10px;margin-top:0.5rem;}
+.water-drops{display:flex;gap:4px;}
+.drop{width:10px;height:14px;background:var(--surface3);border-radius:50% 50% 50% 50%/60% 60% 40% 40%;transition:background 0.3s;}
+.drop.filled{background:var(--cyan);}
+.meal-type-toggle{display:flex;gap:0;background:var(--surface2);border-radius:var(--radius-sm);padding:3px;width:fit-content;margin-bottom:1rem;border:0.5px solid var(--border);}
+.day-selector{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;}
+.day-btn{padding:0.4rem 0.7rem;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:transparent;font-size:12px;font-family:"DM Sans",sans-serif;cursor:pointer;color:var(--text2);transition:all 0.2s;}
+.day-btn:hover{border-color:var(--orange);color:var(--text);}
+.day-btn.active{background:var(--orange-glow);border-color:var(--orange);color:var(--orange);font-weight:500;}
+.day-tab{display:none;}
+.day-tab.active{display:block;}
+.day-header{font-family:"Barlow Condensed",sans-serif;font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--orange);margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:0.5px solid var(--border);}
+.mtt{padding:0.4rem 1rem;font-size:13px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;border:none;background:transparent;color:var(--text3);border-radius:6px;transition:all 0.2s;}
+.mtt.active{background:var(--cyan);color:#000;}
+.info-badge{display:flex;align-items:center;gap:8px;background:var(--cyan-glow);border:0.5px solid rgba(0,200,232,0.25);border-radius:var(--radius-sm);padding:0.6rem 0.85rem;font-size:13px;color:#7ADEEE;margin-bottom:1rem;line-height:1.5;width:100%;}
+.ready-banner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;background:var(--orange-glow);border:0.5px solid rgba(255,107,0,0.3);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;}
+.ready-banner-text .title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.04em;}
+.ready-banner-text .sub{font-size:13px;color:var(--text2);margin-top:3px;}
+
+footer{text-align:center;padding:2rem 1.5rem;border-top:0.5px solid var(--border);margin-top:1rem;}
+footer p{font-size:12px;color:var(--text3);line-height:1.8;}
+footer a{color:var(--orange);text-decoration:none;}
+
+@media(max-width:480px){.g4{grid-template-columns:repeat(2,1fr);}.g3{grid-template-columns:1fr 1fr;}.hero{padding:1.5rem 1rem 1rem;}.ready-banner{flex-direction:column;}}
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:1000;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--radius);padding:1.5rem;width:100%;max-width:460px;}
+.modal-title{font-family:"Barlow Condensed",sans-serif;font-size:18px;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.25rem;}
+.modal-sub{font-size:13px;color:var(--text2);margin-bottom:1.25rem;line-height:1.6;}
+.check-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border);cursor:pointer;font-size:14px;}
+.check-row:last-of-type{border-bottom:none;margin-bottom:0.75rem;}
+.check-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--orange);flex-shrink:0;}
+.modal-close{background:transparent;border:none;color:var(--text3);font-size:20px;cursor:pointer;float:right;margin-top:-4px;}
+.send-status{font-size:13px;padding:0.6rem 0;min-height:24px;text-align:center;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <img src="https://fitwithluke.com/FWL_logo_island_woman_3.png" class="hero-logo" alt="Fit With Luke" onerror="this.style.display='none'"/>
+  <div class="hero-eyebrow">Worldwide · 'Ori Tahiti · Polynesian Dance</div>
+  <h1><span class="o">Polynesian Dancer</span><br/><span class="c">Nutrition</span> Calculator</h1>
+  <p>Your complete personalized nutrition system — meal plans, grocery lists, supplements, and protocols built specifically for Polynesian dancers worldwide.</p>
+  <div class="hero-tagline">Dream. Prepare. Perform.</div>
+</div>
+
+<div class="container">
+
+<div class="card">
+  <div class="card-title">Step 1 — Your Profile</div>
+  <div>
+    <label style="margin-bottom:8px;">Units</label>
+    <div class="unit-toggle">
+      <button class="unit-btn active" id="u-imp" onclick="setUnits('imperial')">Imperial (lbs / ft)</button>
+      <button class="unit-btn" id="u-met" onclick="setUnits('metric')">Metric (kg / cm)</button>
+    </div>
+  </div>
+  <div class="loc-row">
+    <input type="text" id="city" placeholder="City, Country (e.g. Seattle, USA)"/>
+    <button class="btn-outline" onclick="detectLocation()">Detect location</button>
+  </div>
+  <div class="g2">
+    <div><label>Age</label><input type="number" id="age" placeholder="25" min="14" max="80"/></div>
+    <div><label>Sex</label><select id="sex"><option value="female">Female</option><option value="male">Male</option></select></div>
+  </div>
+  <div id="imp-fields">
+    <div class="g3">
+      <div><label>Weight (lbs)</label><input type="number" id="wlbs" placeholder="130"/></div>
+      <div><label>Height (ft)</label><input type="number" id="hft" placeholder="5" min="3" max="7"/></div>
+      <div><label>Height (in)</label><input type="number" id="hin" placeholder="4" min="0" max="11"/></div>
+    </div>
+  </div>
+  <div id="met-fields" class="hidden">
+    <div class="g2">
+      <div><label>Weight (kg)</label><input type="number" id="wkg" placeholder="60"/></div>
+      <div><label>Height (cm)</label><input type="number" id="hcm" placeholder="163"/></div>
+    </div>
+  </div>
+  <div class="field">
+    <label>Activity level (outside dance)</label>
+    <select id="activity">
+      <option value="1.2">Sedentary</option>
+      <option value="1.375">Lightly active (1-2x/week)</option>
+      <option value="1.55" selected>Moderately active (3-4x/week)</option>
+      <option value="1.725">Very active (5+/week)</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>'Ori Tahiti / Polynesian dance practice</label>
+    <select id="danceFreq">
+      <option value="0">No practice this week</option>
+      <option value="1">1 session/week (~60 min)</option>
+      <option value="2" selected>2-3 sessions/week</option>
+      <option value="3">4-5 sessions/week</option>
+      <option value="4">Daily / competition prep</option>
+    </select>
+  </div>
+
+  <label style="margin-bottom:8px;display:block;">Goal</label>
+  <div class="toggle-row" id="goal-btns">
+    <button class="tb active" onclick="setGoal('maintain',this)">Maintain</button>
+    <button class="tb" onclick="setGoal('lose',this)">Lose weight</button>
+    <button class="tb" onclick="setGoal('gain',this)">Build muscle</button>
+    <button class="tb" onclick="setGoal('performance',this)">Competition prep</button>
+  </div>
+  <div id="goal-weight-section" class="hidden">
+    <div class="goal-weight-block">
+      <div class="g2" style="margin-bottom:10px;">
+        <div><label id="gw-label">Goal weight (lbs)</label><input type="number" id="goal-weight" placeholder="120"/></div>
+        <div><label>Target date</label><input type="date" id="goal-date"/></div>
+      </div>
+      <div style="font-size:12px;color:var(--cyan);line-height:1.6;">Safe rate for dancers: 0.5-1 kg (1-2 lbs)/week. Calories adjust to hit your goal by that date.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <label style="margin-bottom:8px;display:block;">Breakfast preference</label>
+  <div class="toggle-row" id="bfast-btns">
+    <button class="tb active" onclick="setPref('bfast','light',this,'bfast-btns')">Light — smoothie / oats</button>
+    <button class="tb" onclick="setPref('bfast','heavy',this,'bfast-btns')">Heavy — full protein meal</button>
+    <button class="tb" onclick="setPref('bfast','both',this,'bfast-btns')">Show me both</button>
+  </div>
+  <label style="margin-bottom:8px;display:block;">Lunch preference</label>
+  <div class="toggle-row" id="lunch-btns">
+    <button class="tb active" onclick="setPref('lunch','light',this,'lunch-btns')">Light — salad / wrap</button>
+    <button class="tb" onclick="setPref('lunch','heavy',this,'lunch-btns')">Heavy — full bowl / plate</button>
+    <button class="tb" onclick="setPref('lunch','both',this,'lunch-btns')">Show me both</button>
+  </div>
+  <label style="margin-bottom:8px;display:block;">Dinner preference</label>
+  <div class="toggle-row" id="dinner-btns">
+    <button class="tb active" onclick="setPref('dinner','light',this,'dinner-btns')">Light — fish / veggies</button>
+    <button class="tb" onclick="setPref('dinner','heavy',this,'dinner-btns')">Heavy — protein + carbs</button>
+    <button class="tb" onclick="setPref('dinner','both',this,'dinner-btns')">Show me both</button>
+  </div>
+  <label style="margin-bottom:8px;display:block;">Snack preference</label>
+  <div class="toggle-row" id="snack-btns">
+    <button class="tb active" onclick="setPref('snack','light',this,'snack-btns')">Light — fruit / yogurt</button>
+    <button class="tb" onclick="setPref('snack','heavy',this,'snack-btns')">Heavy — protein bar / shake</button>
+    <button class="tb" onclick="setPref('snack','both',this,'snack-btns')">Show me both</button>
+  </div>
+
+  <div class="divider"></div>
+  <label style="margin-bottom:8px;display:block;">Allergies &amp; dietary restrictions</label>
+  <div class="toggle-row" id="allergy-btns">
+    <button class="tb" onclick="toggleAllergy(this)">Gluten-free</button>
+    <button class="tb" onclick="toggleAllergy(this)">Dairy-free</button>
+    <button class="tb" onclick="toggleAllergy(this)">Nut allergy</button>
+    <button class="tb" onclick="toggleAllergy(this)">Shellfish allergy</button>
+    <button class="tb" onclick="toggleAllergy(this)">Vegetarian</button>
+    <button class="tb" onclick="toggleAllergy(this)">Vegan</button>
+  </div>
+  <div class="field" style="margin-top:4px;">
+    <label>Other allergies or restrictions</label>
+    <input type="text" id="allergies-other" placeholder="e.g. soy, eggs, fish..."/>
+  </div>
+
+  <button class="btn-primary" onclick="calculate()">Calculate my complete nutrition plan</button>
+</div>
+
+<!-- RESULTS -->
+<div id="results" class="hidden">
+
+  <div class="ready-banner">
+    <div class="ready-banner-text">
+      <div class="title">Your nutrition plan is ready</div>
+      <div class="sub">Generate your meal plan and grocery list below, then export as a branded PDF.</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn-export" onclick="openEmailModal()" id="email-send-btn">Send to Email</button>
+      <button class="btn-export" onclick="exportPDF()" id="export-btn">Export as PDF</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Daily Calorie Targets</div>
+    <div class="g4" id="metric-cards"></div>
+    <div id="goal-timeline" class="hidden">
+      <div class="divider"></div>
+      <div class="card-title" style="margin-bottom:0.5rem;">Weight Goal Timeline</div>
+      <div id="timeline-content"></div>
+    </div>
+    <div class="divider"></div>
+    <div class="card-title" style="margin-bottom:0.75rem;">Daily Macros</div>
+    <div id="macros-block"></div>
+    <div class="divider"></div>
+    <div style="font-size:13px;color:var(--text2);">Daily water intake</div>
+    <div class="water-bar">
+      <div class="water-drops" id="water-drops"></div>
+      <span style="font-size:14px;font-weight:500;color:var(--cyan);" id="water-rec">--</span>
+    </div>
+    <div style="font-size:12px;color:var(--text3);margin-top:4px;">Add 500ml-1L per hour of dance practice + electrolytes</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Your Meal Plan</div>
+    <div class="info-badge">Calories and portions are tailored to your body weight, goal, and dance schedule.</div>
+    <label style="margin-bottom:8px;display:block;">Meal plan type</label>
+    <div class="meal-type-toggle">
+      <button class="mtt active" id="mt-togo" onclick="setMealType('togo')">To-Go / Eat Out</button>
+      <button class="mtt" id="mt-grocery" onclick="setMealType('grocery')">Grocery Store</button>
+    </div>
+    <div style="margin-bottom:0.5rem;">
+      <label style="margin-bottom:8px;display:block;">Days to plan</label>
+      <div style="display:flex;gap:8px;margin-bottom:0.75rem;">
+        <button class="btn-outline" id="plan-7day" onclick="selectAllDays()" style="font-size:12px;padding:0.4rem 0.85rem;border-color:var(--orange);color:var(--orange);">Full 7-Day Plan</button>
+        <button class="btn-outline" id="plan-custom" onclick="toggleCustomDays()" style="font-size:12px;padding:0.4rem 0.85rem;">Custom days</button>
+      </div>
+      <div class="day-selector" id="day-selector" style="display:none;">
+        <button class="day-btn active" onclick="toggleDay(this,'Monday')">Mon</button>
+        <button class="day-btn active" onclick="toggleDay(this,'Tuesday')">Tue</button>
+        <button class="day-btn active" onclick="toggleDay(this,'Wednesday')">Wed</button>
+        <button class="day-btn active" onclick="toggleDay(this,'Thursday')">Thu</button>
+        <button class="day-btn active" onclick="toggleDay(this,'Friday')">Fri</button>
+        <button class="day-btn active" onclick="toggleDay(this,'Saturday')">Sat</button>
+        <button class="day-btn active" onclick="toggleDay(this,'Sunday')">Sun</button>
+      </div>
+    </div>
+    <div class="status-msg" id="meal-status"></div>
+    <div id="meal-plan-output"></div>
+    <button class="btn-primary" id="meal-btn" onclick="buildMealPlan()">Generate my meal plan</button>
+  </div>
+
+  <div class="card" id="restaurant-card">
+    <div class="card-title">Your Restaurants in <span id="city-label">your city</span></div>
+    <div class="status-msg" id="rest-status"></div>
+    <div id="rest-pills" style="margin-bottom:8px;"></div>
+    <div class="add-row">
+      <input type="text" id="custom-rest" placeholder="Add a restaurant manually..."/>
+      <button class="btn-outline" onclick="addCustom()">Add</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Weekly Grocery List</div>
+    <div class="info-badge">Based on your goal and body weight. Check off items as you shop.</div>
+    <div id="grocery-output"></div>
+    <button class="btn-cyan" id="grocery-btn" onclick="buildGroceryList()">Generate my grocery list</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Supplement Protocol</div>
+    <div class="info-badge">Timed around your dance practice for maximum performance and recovery.</div>
+    <div id="supplement-output"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Training Nutrition Protocols</div>
+    <div id="protocol-output"></div>
+  </div>
+
+</div>
+</div>
+
+<div class="modal-overlay" id="email-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeEmailModal()">x</button>
+    <div class="modal-title">Send to my email</div>
+    <div class="modal-sub">Enter your details and choose what to include. You will receive a formatted nutrition plan in your inbox.</div>
+    <div class="field"><label>Your name</label><input type="text" id="send-name" placeholder="Your name"/></div>
+    <div class="field"><label>Email address</label><input type="text" id="send-email" placeholder="you@example.com"/></div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;font-family:Barlow Condensed,sans-serif;font-weight:700;">Include in email:</div>
+    <label class="check-row"><input type="checkbox" id="inc-calories" checked/> Daily calorie targets and macros</label>
+    <label class="check-row"><input type="checkbox" id="inc-meals" checked/> Meal plan</label>
+    <label class="check-row"><input type="checkbox" id="inc-grocery" checked/> Grocery list</label>
+    <label class="check-row"><input type="checkbox" id="inc-supps" checked/> Supplement protocol</label>
+    <label class="check-row"><input type="checkbox" id="inc-protocols" checked/> Training nutrition protocols</label>
+    <div class="send-status" id="send-status"></div>
+    <button class="btn-primary" id="send-btn" onclick="sendEmail()" style="margin-top:0;">Send my nutrition plan</button>
+    <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:0.75rem;">Powered by Fit With Luke · fitwithluke.com</div>
+  </div>
+</div>
+
+<footer>
+  <p>Built for 'Ori Tahiti and Polynesian dancers worldwide.<br/>
+  <a href="https://fitwithluke.com" target="_blank">fitwithluke.com</a> &bull; San Diego, CA<br/>
+  <span style="font-size:11px;">Dream. Prepare. Perform.</span></p>
+</footer>
+
+<script>
+var API_URL = 'https://fwl-api.vercel.app/api/claude';
+var selectedDays = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+var customDaysMode = false;
+var prefs = { bfast: 'light', lunch: 'light', dinner: 'light', snack: 'light' };
+var allergies = new Set();
+var goalMode = 'maintain';
+var unitMode = 'imperial';
+var mealType = 'togo';
+var userCalories = 0;
+var userCity = '';
+var userKg = 0;
+var userProtein = 0;
+var userCarbs = 0;
+var userFat = 0;
+var selectedRests = new Set();
+var allRests = [];
+
+function setUnits(u) {
+  unitMode = u;
+  document.getElementById('u-imp').classList.toggle('active', u === 'imperial');
+  document.getElementById('u-met').classList.toggle('active', u === 'metric');
+  document.getElementById('imp-fields').classList.toggle('hidden', u === 'metric');
+  document.getElementById('met-fields').classList.toggle('hidden', u === 'imperial');
+  document.getElementById('gw-label').textContent = u === 'metric' ? 'Goal weight (kg)' : 'Goal weight (lbs)';
+}
+
+function setGoal(g, el) {
+  goalMode = g;
+  var btns = document.getElementById('goal-btns').querySelectorAll('.tb');
+  btns.forEach(function(b) { b.classList.remove('active'); });
+  el.classList.add('active');
+  var show = g === 'lose' || g === 'gain';
+  document.getElementById('goal-weight-section').classList.toggle('hidden', !show);
+  if (g === 'lose') document.getElementById('goal-date').min = new Date().toISOString().split('T')[0];
+}
+
+function setPref(meal, val, el, groupId) {
+  prefs[meal] = val;
+  var btns = document.getElementById(groupId).querySelectorAll('.tb');
+  btns.forEach(function(b) { b.classList.remove('active'); });
+  el.classList.add('active');
+}
+
+function toggleAllergy(el) {
+  var val = el.textContent.trim();
+  if (allergies.has(val)) { allergies.delete(val); el.classList.remove('active'); }
+  else { allergies.add(val); el.classList.add('active'); }
+}
+
+function getAllergyNote() {
+  var all = Array.from(allergies);
+  var other = document.getElementById('allergies-other').value.trim();
+  if (other) all.push(other);
+  if (all.length === 0) return 'no known allergies';
+  return 'ALLERGIES AND RESTRICTIONS (strictly avoid): ' + all.join(', ');
+}
+
+function setMealType(t) {
+  mealType = t;
+  document.getElementById('mt-togo').classList.toggle('active', t === 'togo');
+  document.getElementById('mt-grocery').classList.toggle('active', t === 'grocery');
+  document.getElementById('restaurant-card').classList.toggle('hidden', t === 'grocery');
+  document.getElementById('meal-plan-output').innerHTML = '';
+  document.getElementById('meal-btn').textContent = 'Generate my meal plan';
+  document.getElementById('meal-btn').disabled = false;
+}
+
+function detectLocation() {
+  if (!navigator.geolocation) { alert('Please type your city.'); return; }
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    fetch('https://nominatim.openstreetmap.org/reverse?lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude + '&format=json&accept-language=en')
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        var city = d.address.city || d.address.town || d.address.village || '';
+        var country = d.address.country || '';
+        document.getElementById('city').value = city && country ? city + ', ' + country : city || country;
+      })
+      .catch(function() { alert('Could not detect. Please type your city.'); });
+  }, function() { alert('Location access denied. Please type your city.'); });
+}
+
+function getKg() {
+  return unitMode === 'metric' ? +document.getElementById('wkg').value : (+document.getElementById('wlbs').value || 0) * 0.453592;
+}
+function getCm() {
+  if (unitMode === 'metric') return +document.getElementById('hcm').value;
+  return ((+document.getElementById('hft').value || 5) * 12 + (+document.getElementById('hin').value || 4)) * 2.54;
+}
+function getGoalKg() {
+  var v = +document.getElementById('goal-weight').value;
+  if (!v) return null;
+  return unitMode === 'metric' ? v : v * 0.453592;
+}
+
+function getPrefDesc(meal) {
+  var p = prefs[meal];
+  var descs = {
+    bfast: { light: 'light options like smoothies, oats, or eggs', heavy: 'heavy high-protein options like full egg meals or cottage cheese bowls', both: 'both a light option AND a heavy option' },
+    lunch: { light: 'light options like salads, wraps, or small bowls', heavy: 'heavy options like full bowls or plates with rice and protein', both: 'both a light option AND a heavy option' },
+    dinner: { light: 'light options like grilled fish, veggies, or soup', heavy: 'heavy options like full protein and carb plates or stir fry with rice', both: 'both a light option AND a heavy option' },
+    snack: { light: 'light snacks like fruit, yogurt, or coconut water', heavy: 'heavier snacks like protein bars, protein shakes, or rice cakes with nut butter', both: 'both a light snack AND a heavier protein snack' }
+  };
+  return descs[meal][p];
+}
+
+function calculate() {
+  var city = document.getElementById('city').value.trim();
+  var age = +document.getElementById('age').value;
+  var sex = document.getElementById('sex').value;
+  var kg = getKg();
+  var cm = getCm();
+  var act = +document.getElementById('activity').value;
+  var dance = +document.getElementById('danceFreq').value;
+  if (!city) { alert('Please enter your city and country.'); return; }
+  if (!age || !kg || !cm) { alert('Please fill in age, weight, and height.'); return; }
+  userCity = city;
+  userKg = kg;
+  var bmr = sex === 'female' ? 10*kg + 6.25*cm - 5*age - 161 : 10*kg + 6.25*cm - 5*age + 5;
+  var danceBurn = Math.round(kg * 6.5);
+  var tdeeD = bmr * act + (dance * danceBurn / 7);
+  var goalKg = getGoalKg();
+  var goalDateVal = document.getElementById('goal-date').value;
+  var eat = Math.round(tdeeD);
+  var deficitNote = '';
+  var timelineHTML = '';
+  var showTimeline = false;
+
+  if ((goalMode === 'lose' || goalMode === 'gain') && goalKg && goalDateVal) {
+    var today = new Date(); today.setHours(0,0,0,0);
+    var target = new Date(goalDateVal); target.setHours(0,0,0,0);
+    var daysLeft = Math.round((target - today) / 86400000);
+    var weeksLeft = daysLeft / 7;
+    var diffKg = goalKg - kg;
+    var dailyAdj = daysLeft > 0 ? Math.round((diffKg * 7700) / daysLeft) : 0;
+    eat = Math.round(tdeeD + dailyAdj);
+    var wkRate = Math.abs(diffKg / weeksLeft);
+    var wkRateLbs = wkRate / 0.453592;
+    var dispGoal = unitMode === 'metric' ? goalKg.toFixed(1) + ' kg' : (goalKg / 0.453592).toFixed(1) + ' lbs';
+    var dispCurr = unitMode === 'metric' ? kg.toFixed(1) + ' kg' : (kg / 0.453592).toFixed(1) + ' lbs';
+    var dispDiff = unitMode === 'metric' ? Math.abs(diffKg).toFixed(1) + ' kg' : Math.abs(diffKg / 0.453592).toFixed(1) + ' lbs';
+    var dispRate = unitMode === 'metric' ? wkRate.toFixed(2) + ' kg/week' : wkRateLbs.toFixed(2) + ' lbs/week';
+    var sc = wkRate <= 1 ? 'safety-safe' : wkRate <= 1.5 ? 'safety-warn' : 'safety-danger';
+    var sm = wkRate <= 1 ? 'Safe and sustainable rate for an active dancer.' : wkRate <= 1.5 ? 'Slightly aggressive. Consider extending your target date.' : 'Exceeds safe limits. Extend your goal date to protect muscle and performance.';
+    var action = goalMode === 'lose' ? 'lose' : 'gain';
+    timelineHTML = '<div class="timeline-inner">'
+      + '<div class="timeline-row"><span style="color:var(--text2);">Current weight</span><span style="font-weight:500;">' + dispCurr + '</span></div>'
+      + '<div class="timeline-row"><span style="color:var(--text2);">Goal weight</span><span style="font-weight:500;">' + dispGoal + '</span></div>'
+      + '<div class="timeline-row"><span style="color:var(--text2);">Total to ' + action + '</span><span style="font-weight:500;">' + dispDiff + '</span></div>'
+      + '<div class="timeline-row"><span style="color:var(--text2);">Time to goal</span><span style="font-weight:500;">' + daysLeft + ' days (' + weeksLeft.toFixed(1) + ' wks)</span></div>'
+      + '<div class="timeline-row"><span style="color:var(--text2);">Weekly rate</span><span style="font-weight:500;">' + dispRate + '</span></div>'
+      + '<div class="timeline-row"><span style="color:var(--text2);">Daily ' + (dailyAdj < 0 ? 'deficit' : 'surplus') + '</span><span style="font-weight:500;color:' + (dailyAdj < 0 ? '#F0997B' : '#9FE1CB') + '">' + Math.abs(dailyAdj) + ' kcal/day</span></div>'
+      + '<div class="timeline-row"><span style="color:var(--text2);">Target date</span><span style="font-weight:500;">' + new Date(goalDateVal).toLocaleDateString('en-US', {month:'long',day:'numeric',year:'numeric'}) + '</span></div>'
+      + '</div><div class="' + sc + '">' + sm + '</div>';
+    showTimeline = true;
+    deficitNote = ' (' + Math.abs(dailyAdj) + ' kcal ' + (dailyAdj < 0 ? 'deficit' : 'surplus') + ')';
+  } else {
+    if (goalMode === 'lose') eat = Math.round(tdeeD - 350);
+    else if (goalMode === 'gain') eat = Math.round(tdeeD + 300);
+    else if (goalMode === 'performance') eat = Math.round(tdeeD + 150);
+    else eat = Math.round(tdeeD);
+  }
+
+  userCalories = eat;
+  var prot = Math.round(kg * 1.6);
+  var fat = Math.round(eat * 0.28 / 9);
+  var carbs = Math.round((eat - prot * 4 - fat * 9) / 4);
+  userProtein = prot;
+  userFat = fat;
+  userCarbs = Math.max(0, carbs);
+  var waterL = +(kg * 0.035).toFixed(1);
+
+  document.getElementById('metric-cards').innerHTML =
+    '<div class="metric-card"><div class="metric-label">Eat daily</div><div class="metric-value" style="color:var(--teal);">' + eat.toLocaleString() + '</div><div class="metric-unit">kcal' + (deficitNote ? '*' : '') + '</div></div>'
+    + '<div class="metric-card"><div class="metric-label">Burn/session</div><div class="metric-value" style="color:var(--coral);">' + Math.round(eat * 0.18).toLocaleString() + '</div><div class="metric-unit">kcal target</div></div>'
+    + '<div class="metric-card"><div class="metric-label">Base BMR</div><div class="metric-value">' + Math.round(bmr).toLocaleString() + '</div><div class="metric-unit">kcal/day</div></div>'
+    + '<div class="metric-card"><div class="metric-label">Dance burns</div><div class="metric-value" style="color:var(--amber);">' + danceBurn.toLocaleString() + '</div><div class="metric-unit">kcal/session</div></div>'
+    + (deficitNote ? '<div style="grid-column:1/-1;font-size:12px;color:var(--text3);padding-top:4px;">* Adjusted to reach your goal by your target date</div>' : '');
+
+  document.getElementById('goal-timeline').classList.toggle('hidden', !showTimeline);
+  if (showTimeline) document.getElementById('timeline-content').innerHTML = timelineHTML;
+
+  var macros = [
+    {label:'Protein', val:prot, unit:'g', pct:Math.round(prot*4/eat*100), color:'#1D9E75'},
+    {label:'Carbohydrates', val:Math.max(0,carbs), unit:'g', pct:Math.round(Math.max(0,carbs)*4/eat*100), color:'#BA7517'},
+    {label:'Fat', val:fat, unit:'g', pct:Math.round(fat*9/eat*100), color:'#D85A30'}
+  ];
+  document.getElementById('macros-block').innerHTML = macros.map(function(m) {
+    return '<div class="macro-row"><span style="font-size:13px;">' + m.label + '</span><span style="font-size:13px;font-weight:500;">' + m.val + m.unit + ' <span style="color:var(--text3);font-weight:400;">(' + m.pct + '%)</span></span></div>'
+      + '<div class="bar-wrap"><div class="bar-fill" style="width:' + m.pct + '%;background:' + m.color + ';"></div></div>';
+  }).join('');
+
+  var drops = Math.min(10, Math.round(waterL / 0.3));
+  document.getElementById('water-drops').innerHTML = Array.from({length:10}, function(_,i) {
+    return '<div class="drop ' + (i < drops ? 'filled' : '') + '"></div>';
+  }).join('');
+  document.getElementById('water-rec').textContent = unitMode === 'metric' ? waterL + 'L daily' : waterL + 'L (' + Math.round(waterL * 33.8) + ' fl oz) daily';
+  document.getElementById('city-label').textContent = city;
+  document.getElementById('results').classList.remove('hidden');
+  buildSupplements();
+  buildProtocols();
+  loadRestaurants(city);
+  document.getElementById('results').scrollIntoView({behavior:'smooth'});
+}
+
+function loadRestaurants(city) {
+  var statusEl = document.getElementById('rest-status');
+  document.getElementById('rest-pills').innerHTML = '';
+  statusEl.innerHTML = '<span class="spinner spinner-teal"></span> Finding restaurants in ' + city + '...';
+  fetch(API_URL, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      model: 'claude-opus-4-5',
+      max_tokens: 800,
+      messages: [{role: 'user', content: 'List 14 real popular restaurants in ' + city + ' that a health-conscious Polynesian dancer might eat at. Include local spots and chains. Return ONLY a JSON array of name strings, no markdown, no extra text.'}]
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    var raw = (data.content.find(function(b) { return b.type === 'text'; }) || {}).text || '[]';
+    allRests = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    selectedRests = new Set();
+    statusEl.innerHTML = '<strong style="color:var(--text);">' + allRests.length + ' restaurants</strong> found in ' + city + ' — select the ones you eat at:';
+    renderPills();
+  })
+  .catch(function() {
+    statusEl.innerHTML = 'Could not load restaurants. Add them manually below.';
+    allRests = [];
+    renderPills();
+  });
+}
+
+function renderPills() {
+  var all = Array.from(new Set([].concat(allRests, Array.from(selectedRests))));
+  document.getElementById('rest-pills').innerHTML = all.map(function(r) {
+    var s = selectedRests.has(r);
+    var safe = r.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    return '<span class="pill ' + (s ? 'sel' : '') + '" onclick="toggleR(this,\'' + safe + '\')"><span class="pill-dot"></span>' + r + '</span>';
+  }).join('');
+}
+
+function toggleR(el, name) {
+  if (selectedRests.has(name)) selectedRests.delete(name);
+  else selectedRests.add(name);
+  el.classList.toggle('sel');
+  el.querySelector('.pill-dot').style.background = selectedRests.has(name) ? 'var(--teal)' : '';
+}
+
+function addCustom() {
+  var inp = document.getElementById('custom-rest');
+  var val = inp.value.trim();
+  if (!val) return;
+  if (!allRests.includes(val)) allRests.push(val);
+  selectedRests.add(val);
+  inp.value = '';
+  renderPills();
+}
+
+function buildMealPlan() {
+  var btn = document.getElementById('meal-btn');
+  var statusEl = document.getElementById('meal-status');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Building your ' + selectedDays.length + '-day meal plan...';
+  statusEl.innerHTML = '';
+
+  var bfast = Math.round(userCalories * 0.25);
+  var lunch = Math.round(userCalories * 0.35);
+  var dinner = Math.round(userCalories * 0.30);
+  var snack = Math.round(userCalories * 0.10);
+  var daysStr = selectedDays.join(', ');
+  var isMultiDay = selectedDays.length > 1;
+
+  var prompt = '';
+  if (mealType === 'togo') {
+    var rests = selectedRests.size > 0 ? Array.from(selectedRests) : allRests.slice(0, 5);
+    if (rests.length === 0) {
+      statusEl.innerHTML = 'Please select at least one restaurant first.';
+      btn.disabled = false;
+      btn.textContent = 'Generate my meal plan';
+      return;
+    }
+    prompt = 'You are a sports nutritionist for Ori Tahiti Polynesian dancers. Client is in ' + userCity + '. Goal: ' + goalMode + '. Daily calories: ' + userCalories + ' kcal. Protein: ' + userProtein + 'g, Carbs: ' + userCarbs + 'g, Fat: ' + userFat + 'g. ' + getAllergyNote() + '. '
+      + 'Create a to-go meal plan for these days: ' + daysStr + '. Use ONLY these restaurants: ' + rests.join(', ') + '. '
+      + 'Vary the meals across different days — do not repeat the same meal on consecutive days. '
+      + 'For each day provide: Breakfast (~' + bfast + ' kcal, ' + getPrefDesc('bfast') + '), Lunch (~' + lunch + ' kcal, ' + getPrefDesc('lunch') + '), Dinner (~' + dinner + ' kcal, ' + getPrefDesc('dinner') + '), Snack (~' + snack + ' kcal, ' + getPrefDesc('snack') + '), Pre-training snack, Post-training recovery. '
+      + 'Include specific menu items, estimated macros, and timing notes. '
+      + 'Return ONLY a JSON object where each key is a day name (e.g. "Monday") and the value is an array of meal objects with keys: time, restaurant, calories, protein, carbs, fat, items, tags (array of 2 strings), timing_note. No markdown, no backticks.';
+  } else {
+    prompt = 'You are a sports nutritionist for Ori Tahiti Polynesian dancers. Client is in ' + userCity + '. Goal: ' + goalMode + '. Daily calories: ' + userCalories + ' kcal. Protein: ' + userProtein + 'g, Carbs: ' + userCarbs + 'g, Fat: ' + userFat + 'g. ' + getAllergyNote() + '. '
+      + 'Create a grocery store meal plan for these days: ' + daysStr + '. Use stores available in ' + userCity + '. '
+      + 'Vary the meals across different days — do not repeat the same meal on consecutive days. '
+      + 'For each day provide: Breakfast (~' + bfast + ' kcal, ' + getPrefDesc('bfast') + '), Lunch (~' + lunch + ' kcal, ' + getPrefDesc('lunch') + '), Dinner (~' + dinner + ' kcal, ' + getPrefDesc('dinner') + '), Snack (~' + snack + ' kcal, ' + getPrefDesc('snack') + '), Pre-training snack, Post-training recovery. '
+      + 'Include specific items with quantities, estimated macros, and timing notes. '
+      + 'Return ONLY a JSON object where each key is a day name (e.g. "Monday") and the value is an array of meal objects with keys: time, store, calories, protein, carbs, fat, items, tags (array of 2 strings), timing_note. No markdown, no backticks.';
+  }
+
+  fetch(API_URL, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({model: 'claude-opus-4-5', max_tokens: 2000, messages: [{role: 'user', content: prompt}]})
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    var raw = (data.content.find(function(b) { return b.type === 'text'; }) || {}).text || '{}';
+    var parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    var tagCls = ['tt', 'tc', 'ta', 'tb2'];
+    var locKey = mealType === 'togo' ? 'restaurant' : 'store';
+
+    function renderMeal(m) {
+      var tagHtml = (m.tags || []).map(function(t, i) {
+        return '<span class="tag ' + tagCls[i % 4] + '">' + t + '</span>';
+      }).join('');
+      return '<div class="meal-block">'
+        + '<div class="meal-time">' + m.time + (m.timing_note ? ' &bull; <span style="color:var(--text2);font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;">' + m.timing_note + '</span>' : '') + '</div>'
+        + '<div class="meal-name">' + (m[locKey] || '') + '</div>'
+        + '<div class="meal-items">' + m.items + '</div>'
+        + '<div style="margin-top:8px;display:flex;gap:12px;flex-wrap:wrap;">'
+        + '<span style="font-size:12px;color:#C8C4BC;">~' + Math.round(m.calories) + ' kcal</span>'
+        + (m.protein ? '<span style="font-size:12px;color:#9FE1CB;">P: ' + Math.round(m.protein) + 'g</span>' : '')
+        + (m.carbs ? '<span style="font-size:12px;color:#FAC775;">C: ' + Math.round(m.carbs) + 'g</span>' : '')
+        + (m.fat ? '<span style="font-size:12px;color:#F0997B;">F: ' + Math.round(m.fat) + 'g</span>' : '')
+        + '</div>'
+        + '<div>' + tagHtml + '</div>'
+        + '</div>';
+    }
+
+    var html = '';
+    var isMultiDay = Array.isArray(parsed) === false && typeof parsed === 'object';
+
+    if (isMultiDay) {
+      // Multi-day: build day tabs
+      var days = Object.keys(parsed);
+      // Day tab buttons
+      html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;">';
+      days.forEach(function(day, i) {
+        html += '<button class="day-btn ' + (i === 0 ? 'active' : '') + '" onclick="switchDay(\'' + day + '\')" id="daytab-' + day + '">' + day.substring(0,3) + '</button>';
+      });
+      html += '</div>';
+      // Day content panels
+      days.forEach(function(day, i) {
+        var meals = parsed[day] || [];
+        var total = meals.reduce(function(s,m) { return s + (Math.round(m.calories)||0); }, 0);
+        html += '<div class="day-tab ' + (i === 0 ? 'active' : '') + '" id="daypanel-' + day + '">';
+        html += '<div class="day-header">' + day + '</div>';
+        html += meals.map(renderMeal).join('');
+        html += '<div style="font-size:13px;color:#C8C4BC;margin-top:0.75rem;padding:0.75rem;background:var(--surface2);border-radius:var(--radius-sm);">Total: ~' + total.toLocaleString() + ' kcal &bull; Target: ' + userCalories.toLocaleString() + ' kcal/day</div>';
+        html += '</div>';
+      });
+    } else {
+      // Single day or array fallback
+      var meals = Array.isArray(parsed) ? parsed : [];
+      var total = meals.reduce(function(s,m) { return s + (Math.round(m.calories)||0); }, 0);
+      html += meals.map(renderMeal).join('');
+      html += '<div style="font-size:13px;color:#C8C4BC;margin-top:0.75rem;padding:0.75rem;background:var(--surface2);border-radius:var(--radius-sm);">Total: ~' + total.toLocaleString() + ' kcal &bull; Target: ' + userCalories.toLocaleString() + ' kcal/day</div>';
+    }
+
+    document.getElementById('meal-plan-output').innerHTML = html;
+    btn.textContent = 'Regenerate meal plan';
+  })
+  .catch(function() {
+    statusEl.innerHTML = 'Could not generate meal plan. Please try again.';
+    btn.textContent = 'Generate my meal plan';
+  })
+  .finally(function() {
+    btn.disabled = false;
+  });
+}
+
+function buildGroceryList() {
+  var btn = document.getElementById('grocery-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Building your grocery list...';
+  var prompt = 'Create a detailed weekly grocery list for an Ori Tahiti Polynesian dancer. Goal: ' + goalMode + '. Daily calories: ' + userCalories + ' kcal. Protein: ' + userProtein + 'g, Carbs: ' + userCarbs + 'g, Fat: ' + userFat + 'g. Located in ' + userCity + '. ' + getAllergyNote() + '. Anti-inflammatory, performance-focused, easy to find locally. Organize by category: Proteins, Carbohydrates, Fruits, Vegetables, Healthy Fats, Hydration, Supplements. For each item include weekly quantity and a short note. Return ONLY a JSON object with category names as keys and arrays of objects with keys: item, quantity, note. No markdown, no backticks.';
+  fetch(API_URL, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({model: 'claude-opus-4-5', max_tokens: 1500, messages: [{role: 'user', content: prompt}]})
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    var raw = (data.content.find(function(b) { return b.type === 'text'; }) || {}).text || '{}';
+    var list = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    var html = '';
+    Object.entries(list).forEach(function(entry) {
+      var cat = entry[0]; var items = entry[1];
+      html += '<div class="grocery-category">' + cat + '</div>';
+      items.forEach(function(item, i) {
+        var id = 'gc' + cat.replace(/\s/g,'') + i;
+        var itemName, itemQty, itemNote;
+        if (typeof item === 'string') {
+          itemName = item; itemQty = ''; itemNote = '';
+        } else if (typeof item === 'object' && item !== null) {
+          itemName = item.item || item.name || item.ingredient || JSON.stringify(item);
+          itemQty = item.quantity || item.amount || item.qty || '';
+          itemNote = item.note || item.notes || item.tip || '';
+        } else {
+          itemName = String(item); itemQty = ''; itemNote = '';
+        }
+        html += '<div class="grocery-item"><div class="grocery-check" id="' + id + '" onclick="toggleCheck(\'' + id + '\')"></div><span><strong style="color:var(--text);">' + itemName + '</strong>' + (itemQty ? ' &mdash; ' + itemQty : '') + (itemNote ? ' <span style="color:var(--text3);">(' + itemNote + ')</span>' : '') + '</span></div>';
+      });
+    });
+    document.getElementById('grocery-output').innerHTML = html;
+    btn.textContent = 'Regenerate grocery list';
+  })
+  .catch(function() {
+    document.getElementById('grocery-output').innerHTML = '<div style="font-size:13px;color:var(--text2);">Could not generate. Please try again.</div>';
+    btn.textContent = 'Generate my grocery list';
+  })
+  .finally(function() { btn.disabled = false; });
+}
+
+function toggleCheck(id) {
+  var el = document.getElementById(id);
+  el.classList.toggle('checked');
+  el.innerHTML = el.classList.contains('checked') ? '<svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" stroke="#fff" stroke-width="1.5" fill="none"/></svg>' : '';
+}
+
+function buildSupplements() {
+  var isComp = goalMode === 'performance';
+  var supps = [
+    {name:'Collagen + Vitamin C', dose:'10-15g collagen + 250mg Vitamin C', time:'Pre-breakfast (empty stomach)', note:'Joint support and recovery'},
+    {name:'Omega-3 (EPA/DHA)', dose:'1000-2000mg', time:'With dinner', note:'Anti-inflammatory, joint health'},
+    {name:'Whey Isolate', dose:'25-30g protein', time:'Post-training (within 30 min)', note:'Muscle repair and recovery'},
+    {name:'Creatine', dose:'5g', time:'Post-training with shake', note:'Performance and strength'},
+    {name:'Magnesium Glycinate', dose:'200-300mg', time:'Evening with dinner', note:'Recovery and sleep quality'},
+    {name:'Electrolytes', dose:'1 pack in water', time:'Morning + post-training', note:'600mg sodium, 200mg potassium, 100mg magnesium'}
+  ];
+  if (isComp) supps.push({name:'Curcumin (Turmeric)', dose:'500mg + black pepper', time:'With any meal', note:'Reduce inflammation for competition phase'});
+  document.getElementById('supplement-output').innerHTML = supps.map(function(s) {
+    return '<div class="supp-row"><div><div class="supp-name">' + s.name + '</div><div class="supp-dose">' + s.dose + ' &bull; ' + s.note + '</div></div><div class="supp-time">' + s.time + '</div></div>';
+  }).join('');
+}
+
+function buildProtocols() {
+  var isComp = goalMode === 'performance';
+  var waterL = (userKg * 0.035).toFixed(1);
+  var minProt = Math.round(userKg * 1.4);
+  var protocols = [
+    {title:'Pre-training fuel', body:'Eat 45-60 min before practice: 15-20g carbs + 10g protein. Options: rice cake + almond butter + half scoop whey, or Greek yogurt + berries + honey.'},
+    {title:'Post-training recovery', body:'Within 30-45 min after practice: 25-30g protein + 40g carbs. Options: whey isolate + banana + 5g creatine + 1L electrolyte water.'},
+    {title:'Hydration target', body:'Daily: ' + waterL + 'L (add 500ml-1L per hour of dance practice). Morning: 500ml coconut water. Midday: 1L + electrolyte tab. Post-training: 1-1.5L rehydration mix.'},
+    {title:'Sleep and recovery', body:'8 hours minimum. No food 3 hours before bed. 10-15 min light walk after evening meal. Ginger tea nightly for anti-inflammatory recovery.'},
+    {title:'Weekly monitoring', body:'Measure waist circumference weekly (navel level, fasted, morning). Adjust intake by 100 kcal every 10 days based on progress. Maintain minimum ' + minProt + 'g protein at all times.'}
+  ];
+  if (isComp) protocols.push({title:'Competition week', body:'Maintain lean muscle, reduce inflammation. Increase carbs to 45% of intake. Avoid new foods. Stick to trusted restaurants. Pineapple and ginger daily for inflammation control.'});
+  document.getElementById('protocol-output').innerHTML = protocols.map(function(p) {
+    return '<div class="protocol-item"><strong>' + p.title + '</strong><br/>' + p.body + '</div>';
+  }).join('');
+}
+
+function exportPDF() {
+  var btn = document.getElementById('export-btn');
+  btn.textContent = 'Generating PDF...';
+  btn.disabled = true;
+
+  try {
+    var jsPDF = window.jspdf.jsPDF;
+    var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    var pageW = doc.internal.pageSize.getWidth();
+    var pageH = doc.internal.pageSize.getHeight();
+    var margin = 16;
+    var contentW = pageW - margin * 2;
+    var y = margin;
+    var lineH = 6;
+
+    function checkPage(needed) {
+      if (y + needed > pageH - margin) {
+        doc.addPage();
+        y = margin;
+        addHeader();
+      }
+    }
+
+    function addHeader() {
+      doc.setFillColor(13, 13, 13);
+      doc.rect(0, 0, pageW, 12, 'F');
+      doc.setTextColor(29, 158, 117);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'bold');
+      doc.text('FIT WITH LUKE', margin, 8);
+      doc.setTextColor(160, 156, 150);
+      doc.setFont('helvetica', 'normal');
+      doc.text("'Ori Tahiti Dancer Nutrition Plan  |  fitwithluke.com", pageW - margin, 8, {align: 'right'});
+    }
+
+    function sectionTitle(title) {
+      checkPage(12);
+      y += 4;
+      doc.setFillColor(29, 158, 117);
+      doc.rect(margin, y, 3, 5, 'F');
+      doc.setTextColor(240, 237, 232);
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      doc.text(title.toUpperCase(), margin + 6, y + 4);
+      y += 10;
+      doc.setDrawColor(29, 158, 117);
+      doc.setLineWidth(0.3);
+      doc.line(margin, y, pageW - margin, y);
+      y += 5;
+    }
+
+    function bodyText(text, indent) {
+      var x = margin + (indent || 0);
+      var w = contentW - (indent || 0);
+      doc.setTextColor(160, 156, 150);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      var lines = doc.splitTextToSize(text, w);
+      lines.forEach(function(line) {
+        checkPage(lineH);
+        doc.text(line, x, y);
+        y += lineH;
+      });
+    }
+
+    function labelValue(label, value, color) {
+      checkPage(lineH);
+      doc.setTextColor(107, 103, 98);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.text(label, margin, y);
+      doc.setTextColor(color ? color[0] : 240, color ? color[1] : 237, color ? color[2] : 232);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.text(String(value), margin + 55, y);
+      y += lineH;
+    }
+
+    function metricRow(items) {
+      checkPage(20);
+      var colW = contentW / items.length;
+      items.forEach(function(item, i) {
+        var x = margin + i * colW;
+        doc.setFillColor(30, 30, 30);
+        doc.roundedRect(x + 1, y, colW - 2, 18, 2, 2, 'F');
+        doc.setTextColor(107, 103, 98);
+        doc.setFontSize(7);
+        doc.setFont('helvetica', 'normal');
+        doc.text(item.label.toUpperCase(), x + colW/2, y + 5, {align: 'center'});
+        doc.setTextColor(item.color[0], item.color[1], item.color[2]);
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.text(item.value, x + colW/2, y + 12, {align: 'center'});
+        doc.setTextColor(107, 103, 98);
+        doc.setFontSize(7);
+        doc.setFont('helvetica', 'normal');
+        doc.text(item.unit, x + colW/2, y + 17, {align: 'center'});
+      });
+      y += 22;
+    }
+
+    function mealBlock(meal) {
+      var timeEl = meal.querySelector('.meal-time');
+      var nameEl = meal.querySelector('.meal-name');
+      var itemsEl = meal.querySelector('.meal-items');
+      if (!timeEl || !itemsEl) return;
+      var timeText = timeEl.textContent.trim();
+      var nameText = nameEl ? nameEl.textContent.trim() : '';
+      var itemsText = itemsEl.textContent.trim();
+      var macroEls = meal.querySelectorAll('[style*="font-size:12px"]');
+      var macroText = Array.from(macroEls).map(function(e) { return e.textContent.trim(); }).join('  ');
+      var tagEls = meal.querySelectorAll('.tag');
+      var tagText = Array.from(tagEls).map(function(e) { return e.textContent.trim(); }).join(' | ');
+
+      var blockH = 8 + Math.ceil(doc.splitTextToSize(itemsText, contentW - 8).length * 5) + 16;
+      checkPage(blockH);
+
+      doc.setFillColor(30, 30, 30);
+      doc.roundedRect(margin, y, contentW, blockH, 2, 2, 'F');
+
+      doc.setTextColor(29, 158, 117);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'bold');
+      doc.text(timeText, margin + 4, y + 6);
+
+      doc.setTextColor(240, 237, 232);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.text(nameText, margin + 4, y + 12);
+
+      doc.setTextColor(160, 156, 150);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      var itemLines = doc.splitTextToSize(itemsText, contentW - 8);
+      var iy = y + 18;
+      itemLines.forEach(function(line) {
+        doc.text(line, margin + 4, iy);
+        iy += 5;
+      });
+
+      if (macroText) {
+        doc.setTextColor(107, 103, 98);
+        doc.setFontSize(7);
+        doc.text(macroText, margin + 4, iy + 1);
+        iy += 5;
+      }
+      if (tagText) {
+        doc.setTextColor(29, 158, 117);
+        doc.setFontSize(7);
+        doc.text(tagText, margin + 4, iy + 1);
+      }
+      y += blockH + 3;
+    }
+
+    // ── PAGE 1: COVER ──
+    doc.setFillColor(13, 13, 13);
+    doc.rect(0, 0, pageW, pageH, 'F');
+    doc.setFillColor(29, 158, 117);
+    doc.rect(0, 0, pageW, 2, 'F');
+    doc.rect(0, pageH - 2, pageW, 2, 'F');
+
+    doc.setTextColor(29, 158, 117);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('FIT WITH LUKE', pageW / 2, 40, {align: 'center'});
+
+    doc.setTextColor(240, 237, 232);
+    doc.setFontSize(22);
+    doc.setFont('helvetica', 'bold');
+    doc.text("'ORI TAHITI DANCER", pageW / 2, 60, {align: 'center'});
+    doc.setTextColor(29, 158, 117);
+    doc.setFontSize(22);
+    doc.text('NUTRITION PLAN', pageW / 2, 72, {align: 'center'});
+
+    doc.setDrawColor(29, 158, 117);
+    doc.setLineWidth(0.5);
+    doc.line(margin + 20, 80, pageW - margin - 20, 80);
+
+    var city = document.getElementById('city').value || 'Your City';
+    var goalLabel = {maintain:'Maintain Weight', lose:'Lose Weight', gain:'Build Muscle', performance:'Competition Prep'}[goalMode] || goalMode;
+    var allergyList = Array.from(allergies);
+    var otherAllergy = document.getElementById('allergies-other').value.trim();
+    if (otherAllergy) allergyList.push(otherAllergy);
+
+    doc.setTextColor(160, 156, 150);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    var details = [
+      'Location: ' + city,
+      'Goal: ' + goalLabel,
+      'Daily Calories: ' + userCalories.toLocaleString() + ' kcal',
+      'Protein: ' + userProtein + 'g   Carbs: ' + userCarbs + 'g   Fat: ' + userFat + 'g',
+    ];
+    if (allergyList.length > 0) details.push('Restrictions: ' + allergyList.join(', '));
+    details.push('Generated: ' + new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'}));
+
+    details.forEach(function(line, i) {
+      doc.text(line, pageW / 2, 96 + i * 10, {align: 'center'});
+    });
+
+    doc.setTextColor(107, 103, 98);
+    doc.setFontSize(8);
+    doc.text('fitwithluke.com  |  San Diego, CA  |  For Polynesian Dancers Worldwide', pageW / 2, pageH - 12, {align: 'center'});
+    doc.text('Not a substitute for medical advice.', pageW / 2, pageH - 7, {align: 'center'});
+
+    // ── PAGE 2: CALORIE TARGETS & MACROS ──
+    doc.addPage();
+    y = margin;
+    addHeader();
+    y = 18;
+
+    sectionTitle('Daily Calorie Targets');
+    metricRow([
+      {label:'Eat Daily', value: userCalories.toLocaleString(), unit:'kcal/day', color:[29,158,117]},
+      {label:'Burn/Session', value: Math.round(userCalories * 0.18).toLocaleString(), unit:'kcal target', color:[216,90,48]},
+      {label:'Base BMR', value: document.getElementById('r-bmr') ? document.getElementById('r-bmr').textContent : '--', unit:'kcal/day', color:[240,237,232]},
+      {label:'Dance Burns', value: document.getElementById('r-dance') ? document.getElementById('r-dance').textContent : '--', unit:'kcal/session', color:[186,117,23]}
+    ]);
+
+    sectionTitle('Daily Macros');
+    var macroData = [
+      {label:'Protein', val: userProtein + 'g', pct: Math.round(userProtein*4/userCalories*100), color:[29,158,117]},
+      {label:'Carbohydrates', val: userCarbs + 'g', pct: Math.round(userCarbs*4/userCalories*100), color:[186,117,23]},
+      {label:'Fat', val: userFat + 'g', pct: Math.round(userFat*9/userCalories*100), color:[216,90,48]}
+    ];
+    macroData.forEach(function(m) {
+      checkPage(12);
+      doc.setTextColor(240, 237, 232);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      doc.text(m.label, margin, y + 4);
+      doc.setFont('helvetica', 'bold');
+      doc.text(m.val + ' (' + m.pct + '%)', margin + 50, y + 4);
+      doc.setFillColor(37, 37, 37);
+      doc.roundedRect(margin, y + 6, contentW, 4, 1, 1, 'F');
+      doc.setFillColor(m.color[0], m.color[1], m.color[2]);
+      doc.roundedRect(margin, y + 6, contentW * m.pct / 100, 4, 1, 1, 'F');
+      y += 14;
+    });
+
+    var waterEl = document.getElementById('water-rec');
+    if (waterEl) {
+      sectionTitle('Daily Hydration');
+      bodyText('Target: ' + waterEl.textContent + ' Add 500ml to 1L per hour of dance practice. Include electrolytes morning and post-training: 600mg sodium, 200mg potassium, 100mg magnesium.');
+    }
+
+    // ── PAGE 3: MEAL PLAN ──
+    var mealBlocks = document.querySelectorAll('.meal-block');
+    if (mealBlocks.length > 0) {
+      doc.addPage();
+      y = margin;
+      addHeader();
+      y = 18;
+      sectionTitle('Your Meal Plan — ' + (mealType === 'togo' ? 'To-Go / Eat Out' : 'Grocery Store'));
+      mealBlocks.forEach(function(meal) { mealBlock(meal); });
+    }
+
+    // ── PAGE 4: GROCERY LIST ──
+    var groceryOut = document.getElementById('grocery-output');
+    if (groceryOut && groceryOut.innerHTML.trim()) {
+      doc.addPage();
+      y = margin;
+      addHeader();
+      y = 18;
+      sectionTitle('Weekly Grocery List');
+      var cats = groceryOut.querySelectorAll('.grocery-category');
+      cats.forEach(function(cat) {
+        checkPage(10);
+        doc.setTextColor(29, 158, 117);
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'bold');
+        doc.text(cat.textContent.toUpperCase(), margin, y);
+        y += 6;
+        var items = cat.parentElement ? Array.from(cat.parentElement.querySelectorAll('.grocery-item')) : [];
+        var catItems = [];
+        var next = cat.nextElementSibling;
+        while (next && next.classList.contains('grocery-item')) {
+          catItems.push(next);
+          next = next.nextElementSibling;
+        }
+        catItems.forEach(function(item) {
+          checkPage(6);
+          doc.setTextColor(160, 156, 150);
+          doc.setFontSize(8);
+          doc.setFont('helvetica', 'normal');
+          var txt = item.textContent.replace(/\s+/g,' ').trim();
+          doc.text('[ ]  ' + txt, margin + 2, y);
+          y += 6;
+        });
+        y += 2;
+      });
+    }
+
+    // ── PAGE 5: SUPPLEMENTS & PROTOCOLS ──
+    doc.addPage();
+    y = margin;
+    addHeader();
+    y = 18;
+    sectionTitle('Supplement Protocol');
+    var suppRows = document.querySelectorAll('.supp-row');
+    suppRows.forEach(function(row) {
+      var name = row.querySelector('.supp-name');
+      var dose = row.querySelector('.supp-dose');
+      var time = row.querySelector('.supp-time');
+      if (!name) return;
+      checkPage(14);
+      doc.setFillColor(30, 30, 30);
+      doc.roundedRect(margin, y, contentW, 12, 1, 1, 'F');
+      doc.setTextColor(240, 237, 232);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.text(name.textContent.trim(), margin + 4, y + 5);
+      if (dose) {
+        doc.setTextColor(160, 156, 150);
+        doc.setFontSize(7);
+        doc.setFont('helvetica', 'normal');
+        doc.text(dose.textContent.trim(), margin + 4, y + 10);
+      }
+      if (time) {
+        doc.setTextColor(29, 158, 117);
+        doc.setFontSize(7);
+        doc.text(time.textContent.trim(), pageW - margin - 4, y + 7, {align: 'right'});
+      }
+      y += 15;
+    });
+
+    sectionTitle('Training Nutrition Protocols');
+    var protos = document.querySelectorAll('.protocol-item');
+    protos.forEach(function(p) {
+      var text = p.textContent.replace(/\s+/g,' ').trim();
+      checkPage(20);
+      doc.setFillColor(30, 30, 30);
+      var lines = doc.splitTextToSize(text, contentW - 8);
+      var blockH = lines.length * 5 + 8;
+      doc.roundedRect(margin, y, contentW, blockH, 1, 1, 'F');
+      doc.setTextColor(240, 237, 232);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      lines.forEach(function(line, i) {
+        doc.text(line, margin + 4, y + 6 + i * 5);
+      });
+      y += blockH + 4;
+    });
+
+    // ── FOOTER ON LAST PAGE ──
+    doc.setTextColor(107, 103, 98);
+    doc.setFontSize(7);
+    doc.text('Generated by Fit With Luke  |  fitwithluke.com  |  For Polynesian Dancers Worldwide', pageW / 2, pageH - 8, {align: 'center'});
+
+    doc.save('FWL-Nutrition-Plan-' + city.replace(/[^a-zA-Z0-9]/g, '-') + '.pdf');
+  } catch(e) {
+    alert('PDF generation failed: ' + e.message);
+  }
+
+  btn.textContent = 'Export as PDF';
+  btn.disabled = false;
+}
+
+// ── EMAIL & CRM CONFIG ──
+var EMAILJS_SERVICE = 'service_b5sx4qw';
+var EMAILJS_TEMPLATE = 'template_217hpst';
+var EMAILJS_PUBLIC_KEY = 'bGsg5ZW3bzavsbcGv';
+var CRM_WEBHOOK = 'https://script.google.com/macros/s/AKfycbzryuQPnSCZNTTuZVvuvfwAIWZqx8G2b9XJvJBKwbhaEPbqZyU44HzWzz7GwwZVcsMc/exec';
+
+(function() {
+  if (window.emailjs) emailjs.init(EMAILJS_PUBLIC_KEY);
+  window.addEventListener('load', function() {
+    if (window.emailjs) emailjs.init(EMAILJS_PUBLIC_KEY);
+  });
+})();
+
+function switchDay(day) {
+  document.querySelectorAll('.day-tab').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('[id^="daytab-"]').forEach(function(b) { b.classList.remove('active'); });
+  var panel = document.getElementById('daypanel-' + day);
+  var tab = document.getElementById('daytab-' + day);
+  if (panel) panel.classList.add('active');
+  if (tab) tab.classList.add('active');
+}
+
+function selectAllDays() {
+  selectedDays = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  customDaysMode = false;
+  document.getElementById('day-selector').style.display = 'none';
+  document.getElementById('plan-7day').style.borderColor = 'var(--orange)';
+  document.getElementById('plan-7day').style.color = 'var(--orange)';
+  document.getElementById('plan-custom').style.borderColor = '';
+  document.getElementById('plan-custom').style.color = '';
+  document.querySelectorAll('.day-btn').forEach(function(b) { b.classList.add('active'); });
+}
+
+function toggleCustomDays() {
+  customDaysMode = true;
+  var sel = document.getElementById('day-selector');
+  sel.style.display = sel.style.display === 'none' ? 'flex' : 'none';
+  document.getElementById('plan-custom').style.borderColor = 'var(--orange)';
+  document.getElementById('plan-custom').style.color = 'var(--orange)';
+  document.getElementById('plan-7day').style.borderColor = '';
+  document.getElementById('plan-7day').style.color = '';
+}
+
+function toggleDay(el, day) {
+  if (selectedDays.includes(day)) {
+    if (selectedDays.length === 1) return;
+    selectedDays = selectedDays.filter(function(d) { return d !== day; });
+    el.classList.remove('active');
+  } else {
+    selectedDays.push(day);
+    el.classList.add('active');
+  }
+}
+
+function openEmailModal() {
+  var mealOut = document.getElementById('meal-plan-output');
+  var groceryOut = document.getElementById('grocery-output');
+  if (!userCalories) { alert('Please calculate your nutrition plan first.'); return; }
+  if (mealOut && mealOut.innerHTML.trim()) document.getElementById('inc-meals').checked = true;
+  if (groceryOut && groceryOut.innerHTML.trim()) document.getElementById('inc-grocery').checked = true;
+  document.getElementById('send-status').innerHTML = '';
+  document.getElementById('email-modal').classList.add('open');
+}
+
+function closeEmailModal() {
+  document.getElementById('email-modal').classList.remove('open');
+}
+
+function buildEmailBody() {
+  var lines = [];
+  var city = document.getElementById('city').value || 'your city';
+  var goalLabel = {maintain:'Maintain Weight', lose:'Lose Weight', gain:'Build Muscle', performance:'Competition Prep'}[goalMode] || goalMode;
+  var allergyList = Array.from(allergies);
+  var otherAllergy = document.getElementById('allergies-other').value.trim();
+  if (otherAllergy) allergyList.push(otherAllergy);
+
+  lines.push('FIT WITH LUKE — PERSONALIZED NUTRITION PLAN');
+  lines.push('============================================');
+  lines.push('Location: ' + city);
+  lines.push('Goal: ' + goalLabel);
+  if (allergyList.length > 0) lines.push('Restrictions: ' + allergyList.join(', '));
+  lines.push('Generated: ' + new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'}));
+  lines.push('');
+
+  if (document.getElementById('inc-calories').checked) {
+    lines.push('DAILY CALORIE TARGETS');
+    lines.push('---------------------');
+    lines.push('Eat daily: ' + userCalories.toLocaleString() + ' kcal/day');
+    lines.push('Burn per session: ' + Math.round(userCalories * 0.18).toLocaleString() + ' kcal');
+    lines.push('');
+    lines.push('MACROS');
+    lines.push('Protein: ' + userProtein + 'g (' + Math.round(userProtein*4/userCalories*100) + '%)');
+    lines.push('Carbohydrates: ' + userCarbs + 'g (' + Math.round(userCarbs*4/userCalories*100) + '%)');
+    lines.push('Fat: ' + userFat + 'g (' + Math.round(userFat*9/userCalories*100) + '%)');
+    var waterEl = document.getElementById('water-rec');
+    if (waterEl) lines.push('Daily water: ' + waterEl.textContent);
+    lines.push('');
+  }
+
+  if (document.getElementById('inc-meals').checked) {
+    var mealBlocks = document.querySelectorAll('.meal-block');
+    if (mealBlocks.length > 0) {
+      lines.push('YOUR MEAL PLAN — ' + (mealType === 'togo' ? 'TO-GO / EAT OUT' : 'GROCERY STORE'));
+      lines.push('---------------------');
+      mealBlocks.forEach(function(m) {
+        var time = m.querySelector('.meal-time');
+        var name = m.querySelector('.meal-name');
+        var items = m.querySelector('.meal-items');
+        var macroEls = m.querySelectorAll('[style*="font-size:12px"]');
+        var macros = Array.from(macroEls).map(function(e) { return e.textContent.trim(); }).join('  ');
+        if (time) lines.push('\n' + time.textContent.trim().toUpperCase());
+        if (name) lines.push(name.textContent.trim());
+        if (items) lines.push(items.textContent.trim());
+        if (macros) lines.push(macros);
+      });
+      lines.push('');
+    }
+  }
+
+  if (document.getElementById('inc-grocery').checked) {
+    var groceryOut = document.getElementById('grocery-output');
+    if (groceryOut && groceryOut.innerHTML.trim()) {
+      lines.push('WEEKLY GROCERY LIST');
+      lines.push('---------------------');
+      var cats = groceryOut.querySelectorAll('.grocery-category');
+      cats.forEach(function(cat) {
+        lines.push('\n' + cat.textContent.trim().toUpperCase());
+        var next = cat.nextElementSibling;
+        while (next && next.classList.contains('grocery-item')) {
+          lines.push('[ ] ' + next.textContent.replace(/\s+/g,' ').trim());
+          next = next.nextElementSibling;
+        }
+      });
+      lines.push('');
+    }
+  }
+
+  if (document.getElementById('inc-supps').checked) {
+    var suppRows = document.querySelectorAll('.supp-row');
+    if (suppRows.length > 0) {
+      lines.push('SUPPLEMENT PROTOCOL');
+      lines.push('---------------------');
+      suppRows.forEach(function(row) {
+        var name = row.querySelector('.supp-name');
+        var dose = row.querySelector('.supp-dose');
+        var time = row.querySelector('.supp-time');
+        if (name) {
+          var line = name.textContent.trim();
+          if (dose) line += ' — ' + dose.textContent.trim();
+          if (time) line += ' (' + time.textContent.trim() + ')';
+          lines.push(line);
+        }
+      });
+      lines.push('');
+    }
+  }
+
+  if (document.getElementById('inc-protocols').checked) {
+    var protos = document.querySelectorAll('.protocol-item');
+    if (protos.length > 0) {
+      lines.push('TRAINING NUTRITION PROTOCOLS');
+      lines.push('---------------------');
+      protos.forEach(function(p) {
+        lines.push(p.textContent.replace(/\s+/g,' ').trim());
+        lines.push('');
+      });
+    }
+  }
+
+  lines.push('============================================');
+  lines.push('Generated by Fit With Luke');
+  lines.push('fitwithluke.com | Dream. Prepare. Perform.');
+  lines.push('For Polynesian dancers worldwide.');
+
+  return lines.join('\n');
+}
+
+function logToCRM(name, email) {
+  var city = document.getElementById('city').value || '';
+  var goalLabel = {maintain:'Maintain Weight', lose:'Lose Weight', gain:'Build Muscle', performance:'Competition Prep'}[goalMode] || goalMode;
+  var payload = {
+    name: name,
+    email: email,
+    city: city,
+    goal: goalLabel,
+    calories: userCalories,
+    phone: ''
+  };
+  fetch(CRM_WEBHOOK, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(payload)
+  }).catch(function() {});
+}
+
+function sendEmail() {
+  var name = document.getElementById('send-name').value.trim();
+  var email = document.getElementById('send-email').value.trim();
+  var statusEl = document.getElementById('send-status');
+  var btn = document.getElementById('send-btn');
+
+  if (!name) { statusEl.innerHTML = '<span style="color:#F0997B;">Please enter your name.</span>'; return; }
+  if (!email || !email.includes('@')) { statusEl.innerHTML = '<span style="color:#F0997B;">Please enter a valid email address.</span>'; return; }
+
+  var hasSelection = document.getElementById('inc-calories').checked
+    || document.getElementById('inc-meals').checked
+    || document.getElementById('inc-grocery').checked
+    || document.getElementById('inc-supps').checked
+    || document.getElementById('inc-protocols').checked;
+  if (!hasSelection) { statusEl.innerHTML = '<span style="color:#F0997B;">Please select at least one item to include.</span>'; return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Sending...';
+  statusEl.innerHTML = '';
+
+  if (!window.emailjs) {
+    statusEl.innerHTML = '<span style="color:#F0997B;">Email service not loaded. Please refresh and try again.</span>';
+    btn.disabled = false; btn.textContent = 'Send my nutrition plan';
+    return;
+  }
+
+  emailjs.init(EMAILJS_PUBLIC_KEY);
+
+  var body = buildEmailBody();
+  emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, {
+    to_name: name,
+    to_email: email,
+    from_name: 'Fit With Luke',
+    message: body,
+    reply_to: 'lukeh@fitwithluke.com'
+  }).then(function() {
+    statusEl.innerHTML = '<span style="color:#9FE1CB;">Sent! Check your inbox (and spam folder just in case).</span>';
+    btn.textContent = 'Send my nutrition plan';
+    btn.disabled = false;
+    logToCRM(name, email);
+  }).catch(function(err) {
+    statusEl.innerHTML = '<span style="color:#F0997B;">Could not send. Please try again.</span>';
+    btn.textContent = 'Send my nutrition plan';
+    btn.disabled = false;
+  });
+}
+</script>
+</body>
+</html>
