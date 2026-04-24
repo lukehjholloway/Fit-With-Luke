@@ -1,7 +1,7 @@
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, anthropic-version, x-api-key');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, anthropic-version, x-api-key, x-fwl-key');
 
   if (req.method === 'OPTIONS') {
     res.status(200).end();
@@ -10,6 +10,13 @@ export default async function handler(req, res) {
 
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  // Check secret key
+  const fwlKey = req.headers['x-fwl-key'];
+  if (fwlKey !== process.env.FWL_SECRET_KEY) {
+    res.status(403).json({ error: 'Unauthorized' });
     return;
   }
 
@@ -26,6 +33,3 @@ export default async function handler(req, res) {
     const data = await response.json();
     res.status(200).json(data);
   } catch(e) {
-    res.status(500).json({ error: e.message });
-  }
-}
