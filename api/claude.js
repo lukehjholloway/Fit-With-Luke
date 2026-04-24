@@ -1,8 +1,10 @@
 export default async function handler(req, res) {
+  // CORS headers must come first — before any checks
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, anthropic-version, x-api-key, x-fwl-key');
 
+  // Handle preflight — must return 200 before key check
   if (req.method === 'OPTIONS') {
     res.status(200).end();
     return;
@@ -13,7 +15,7 @@ export default async function handler(req, res) {
     return;
   }
 
-  // Check secret key
+  // Check secret key on POST only
   const fwlKey = req.headers['x-fwl-key'];
   if (fwlKey !== process.env.FWL_SECRET_KEY) {
     res.status(403).json({ error: 'Unauthorized' });
@@ -33,3 +35,6 @@ export default async function handler(req, res) {
     const data = await response.json();
     res.status(200).json(data);
   } catch(e) {
+    res.status(500).json({ error: e.message });
+  }
+}
