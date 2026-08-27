@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enrollment Countdown — Fit With Luke</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Lato:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #FF6B00;
+    --gold: #C9A227;
+    --black: #0D0D0D;
+    --dark: #1A1A1A;
+    --white: #FFFFFF;
+    --off-white: #F8F8F8;
+    --mid-gray: #999999;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    font-family: 'Lato', sans-serif;
+    color: var(--white);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+  }
+
+  .countdown-section {
+    width: 100%;
+    max-width: 900px;
+    text-align: center;
+    position: relative;
+  }
+
+  /* faint radial glow behind everything, like gym floor lighting */
+  .countdown-section::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 700px;
+    height: 700px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(255,107,0,0.10) 0%, rgba(201,162,39,0.05) 40%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .content { position: relative; z-index: 1; }
+
+  .eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .headline {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: clamp(30px, 5vw, 52px);
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    line-height: 1.05;
+    margin-bottom: 8px;
+  }
+  .headline span { color: var(--orange); }
+
+  .deadline-sub {
+    font-size: 15px;
+    color: var(--mid-gray);
+    margin-bottom: 46px;
+  }
+  .deadline-sub strong { color: var(--white); font-weight: 700; }
+
+  .rings-row {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    flex-wrap: wrap;
+    margin-bottom: 46px;
+  }
+
+  .ring-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .ring {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background:
+      conic-gradient(var(--ring-color, var(--orange)) calc(var(--pct, 0) * 1%), rgba(255,255,255,0.08) 0);
+    transition: background 0.6s linear;
+  }
+  .ring::before {
+    content: "";
+    position: absolute;
+    inset: 9px;
+    border-radius: 50%;
+    background: var(--black);
+  }
+  .ring-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .ring-number {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 40px;
+    line-height: 1;
+    color: var(--white);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ring-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mid-gray);
+    margin-top: 12px;
+  }
+
+  .ring-unit[data-unit="seconds"] .ring-number {
+    color: var(--orange);
+  }
+
+  .cta-btn {
+    display: inline-block;
+    background: var(--orange);
+    color: var(--white);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 16px 44px;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(255,107,0,0.35);
+    transition: background 0.18s, transform 0.15s, box-shadow 0.18s;
+  }
+  .cta-btn:hover {
+    background: #e05e00;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(255,107,0,0.45);
+  }
+
+  .cta-sub {
+    font-size: 12px;
+    color: var(--mid-gray);
+    margin-top: 12px;
+    letter-spacing: 0.03em;
+  }
+
+  .cta-btn--whatsapp {
+    background: transparent;
+    border: 2px solid var(--gold);
+    color: var(--gold);
+    box-shadow: none;
+    padding: 14px 42px;
+  }
+  .cta-btn--whatsapp:hover {
+    background: var(--gold);
+    color: var(--black);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(201,162,39,0.35);
+  }
+
+  /* closed state */
+  .closed-message { display: none; }
+  .is-closed .content > *:not(.closed-message) { display: none; }
+  .is-closed .closed-message {
+    display: block;
+  }
+  .closed-message .eyebrow { color: var(--mid-gray); }
+  .closed-message .headline { color: var(--white); }
+  .closed-message .headline span { color: var(--mid-gray); }
+
+  @media (max-width: 560px) {
+    .rings-row { gap: 16px; }
+    .ring { width: 92px; height: 92px; }
+    .ring::before { inset: 7px; }
+    .ring-number { font-size: 28px; }
+    .ring-label { font-size: 9.5px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ring { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="countdown-section" id="countdownSection">
+  <div class="content">
+
+    <div class="eyebrow">Fit With Luke &middot; Polynesian Dance Strength Training</div>
+    <h2 class="headline">Enrollment closes <span>Wednesday</span></h2>
+    <div class="deadline-sub">Doors close <strong>Wednesday, August 26 at 11:59 PM</strong> &mdash; after that, spots reopen with the next group.</div>
+
+    <div class="rings-row">
+      <div class="ring-unit" data-unit="days">
+        <div class="ring" id="ringDays" style="--ring-color: var(--gold);">
+          <div class="ring-inner">
+            <span class="ring-number" id="numDays">00</span>
+          </div>
+        </div>
+        <div class="ring-label">Days</div>
+      </div>
+
+      <div class="ring-unit" data-unit="hours">
+        <div class="ring" id="ringHours" style="--ring-color: var(--gold);">
+          <div class="ring-inner">
+            <span class="ring-number" id="numHours">00</span>
+          </div>
+        </div>
+        <div class="ring-label">Hours</div>
+      </div>
+
+      <div class="ring-unit" data-unit="minutes">
+        <div class="ring" id="ringMinutes" style="--ring-color: var(--orange);">
+          <div class="ring-inner">
+            <span class="ring-number" id="numMinutes">00</span>
+          </div>
+        </div>
+        <div class="ring-label">Minutes</div>
+      </div>
+
+      <div class="ring-unit" data-unit="seconds">
+        <div class="ring" id="ringSeconds" style="--ring-color: var(--orange);">
+          <div class="ring-inner">
+            <span class="ring-number" id="numSeconds">00</span>
+          </div>
+        </div>
+        <div class="ring-label">Seconds</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="closed-message">
+    <div class="eyebrow">Fit With Luke &middot; Polynesian Dance Strength Training</div>
+    <h2 class="headline">Enrollment is <span>closed</span></h2>
+    <div class="deadline-sub">This group has started. Join the community to be the first to know when the next one opens.</div>
+    <a class="cta-btn cta-btn--whatsapp" href="https://tally.so/r/J90oeK" target="_blank">Join the Community</a>
+    <div class="cta-sub">Get notified the moment the next group opens</div>
+  </div>
+</div>
+
+<script>
+  // Deadline: Wednesday, August 26, 2026, 11:59 PM Pacific Time
+  const deadline = new Date("2026-08-26T23:59:00-07:00");
+
+  const els = {
+    days: document.getElementById('numDays'),
+    hours: document.getElementById('numHours'),
+    minutes: document.getElementById('numMinutes'),
+    seconds: document.getElementById('numSeconds'),
+    ringDays: document.getElementById('ringDays'),
+    ringHours: document.getElementById('ringHours'),
+    ringMinutes: document.getElementById('ringMinutes'),
+    ringSeconds: document.getElementById('ringSeconds'),
+  };
+
+  const section = document.getElementById('countdownSection');
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function update() {
+    const now = new Date();
+    const diff = deadline - now;
+
+    if (diff <= 0) {
+      section.classList.add('is-closed');
+      clearInterval(timer);
+      return;
+    }
+
+    const totalSeconds = Math.floor(diff / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    els.days.textContent = pad(days);
+    els.hours.textContent = pad(hours);
+    els.minutes.textContent = pad(minutes);
+    els.seconds.textContent = pad(seconds);
+
+    // Ring fill: each ring shows progress remaining within its own cycle,
+    // like an interval timer counting down (full ring = just started, empty = about to tick over)
+    els.ringDays.style.setProperty('--pct', Math.min(100, (days / 7) * 100));
+    els.ringHours.style.setProperty('--pct', (hours / 24) * 100);
+    els.ringMinutes.style.setProperty('--pct', (minutes / 60) * 100);
+    els.ringSeconds.style.setProperty('--pct', (seconds / 60) * 100);
+  }
+
+  let timer;
+  update();
+  timer = setInterval(update, 1000);
+</script>
+
+</body>
+</html>
