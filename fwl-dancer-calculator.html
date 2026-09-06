@@ -1928,14 +1928,37 @@ function buildMealPlan() {
   var timeoutId = setTimeout(function() { mealController.abort(); }, 55000);
   fetch(API_URL, {
     method:'POST', headers:{'Content-Type':'application/json','x-fwl-key':FWL_KEY},
-    body:JSON.stringify({model:'claude-sonnet-4-5-20250929', max_tokens:4000, messages:[{role:'user', content:prompt}]}),
+    body:JSON.stringify({model:'claude-sonnet-4-5-20250929', max_tokens:6000, messages:[{role:'user', content:prompt}]}),
     signal: mealController.signal
   })
   .then(function(r) { return r.json(); })
   .then(function(data) {
     clearTimeout(timeoutId);
     var raw = (data.content.find(function(b) { return b.type==='text'; })||{}).text || '{}';
-    var parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    // Clean the response - remove markdown, fix common JSON issues
+    var cleaned = raw
+      .replace(/```json/g,'').replace(/```/g,'')  // remove markdown
+      .replace(/,\s*}/g,'}').replace(/,\s*]/g,']')  // trailing commas
+      .trim();
+    // Find the JSON object/array boundaries
+    var jsonStart = cleaned.indexOf('{');
+    var jsonStartArr = cleaned.indexOf('[');
+    if (jsonStartArr !== -1 && (jsonStart === -1 || jsonStartArr < jsonStart)) jsonStart = jsonStartArr;
+    if (jsonStart > 0) cleaned = cleaned.slice(jsonStart);
+    var jsonEnd = cleaned.lastIndexOf('}');
+    var jsonEndArr = cleaned.lastIndexOf(']');
+    if (jsonEndArr > jsonEnd) jsonEnd = jsonEndArr;
+    if (jsonEnd !== -1 && jsonEnd < cleaned.length - 1) cleaned = cleaned.slice(0, jsonEnd + 1);
+    var parsed;
+    try {
+      parsed = JSON.parse(cleaned);
+    } catch(parseErr) {
+      console.error('JSON parse error:', parseErr.message);
+      console.error('Raw response:', raw.substring(0,500));
+      statusEl.innerHTML = '<span style="color:#FFA060;">Meal plan format error — trying again...</span>';
+      btn.disabled = false; btn.textContent = 'Generate my meal plan';
+      return;
+    }
     var isObj = !Array.isArray(parsed) && typeof parsed === 'object' && parsed !== null;
     var dayMeals = isObj ? parsed : {};
     if (!isObj) { dayMeals[selectedDays[0]||'Today'] = Array.isArray(parsed)?parsed:[]; }
@@ -2119,7 +2142,7 @@ function buildGroceryList() {
   var timeoutId = setTimeout(function() { mealController.abort(); }, 55000);
   fetch(API_URL, {
     method:'POST', headers:{'Content-Type':'application/json','x-fwl-key':FWL_KEY},
-    body:JSON.stringify({model:'claude-sonnet-4-5-20250929', max_tokens:4000, messages:[{role:'user', content:prompt}]}),
+    body:JSON.stringify({model:'claude-sonnet-4-5-20250929', max_tokens:6000, messages:[{role:'user', content:prompt}]}),
     signal: mealController.signal
   })
   .then(function(r) { return r.json(); })
