@@ -2200,10 +2200,17 @@ function buildGroceryList() {
     clearTimeout(timeoutId);
     var raw = (data.content.find(function(b) { return b.type==='text'; })||{}).text || '{}';
     var cleanedRaw = raw.replace(/```json/g,'').replace(/```/g,'').trim();
+    // Find the JSON object boundaries precisely
     var s = cleanedRaw.indexOf('{');
-    if (s > 0) cleanedRaw = cleanedRaw.slice(s);
-    var e = cleanedRaw.lastIndexOf('}');
-    if (e !== -1 && e < cleanedRaw.length - 1) cleanedRaw = cleanedRaw.slice(0, e + 1);
+    if (s === -1) throw new Error('No JSON object found');
+    // Find the matching closing brace by counting depth
+    var depth = 0; var e = -1;
+    for (var ci = s; ci < cleanedRaw.length; ci++) {
+      if (cleanedRaw[ci] === '{') depth++;
+      else if (cleanedRaw[ci] === '}') { depth--; if (depth === 0) { e = ci; break; } }
+    }
+    if (e === -1) throw new Error('Unclosed JSON object');
+    cleanedRaw = cleanedRaw.slice(s, e + 1);
     var list = JSON.parse(cleanedRaw);
     if (typeof list !== 'object' || Array.isArray(list)) throw new Error('Invalid grocery format');
     var html = '';
