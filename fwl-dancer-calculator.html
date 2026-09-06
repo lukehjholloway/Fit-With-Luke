@@ -2806,34 +2806,62 @@ function buildEmailBody() {
 
   // MEAL PLAN
   if (document.getElementById('inc-meals').checked) {
-    var table = document.querySelector('.sp-table');
-    if (table) {
+    var mealOutEl = document.getElementById('meal-plan-output');
+    if (mealOutEl && mealOutEl.innerHTML.trim()) {
       lines.push('YOUR WEEKLY MEAL PLAN');
       lines.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      lines.push('The meals below are selected for ' + city + ' and matched to your calorie and macro targets. Feel free to swap within the same meal type if needed.');
+      lines.push('Meals are selected for ' + city + ' and matched to your calorie and macro targets.');
       lines.push('');
-      var headers = table.querySelectorAll('thead th');
-      var days = [];
-      for (var d = 1; d < headers.length; d++) days.push(headers[d].textContent.trim());
-      var rows = table.querySelectorAll('tbody tr:not(.sp-total)');
-      rows.forEach(function(row) {
-        var cells = row.querySelectorAll('td');
-        var mealType = cells[0] ? cells[0].textContent.trim() : '';
-        lines.push('  ' + mealType.toUpperCase());
-        for (var i = 1; i < cells.length; i++) {
-          var day = days[i-1] || '';
-          var rest = cells[i].querySelector('.sp-rest-name');
-          var desc = cells[i].querySelector('.sp-desc');
-          var kcal = cells[i].querySelector('.sp-kcal');
-          if (rest || desc) {
-            var restTxt = rest ? rest.textContent.trim() : '';
-            var descTxt = desc ? desc.textContent.trim() : '';
-            var kcalTxt = kcal ? ' (' + kcal.textContent.trim() + ')' : '';
-            lines.push('  ' + day + ': ' + (restTxt ? restTxt + ' — ' : '') + descTxt + kcalTxt);
+      // Handle standard table format
+      var table = mealOutEl.querySelector('.sp-table');
+      if (table) {
+        var headers = table.querySelectorAll('thead th');
+        var days = [];
+        for (var d = 1; d < headers.length; d++) days.push(headers[d].textContent.trim());
+        var rows = table.querySelectorAll('tbody tr:not(.sp-total)');
+        rows.forEach(function(row) {
+          var cells = row.querySelectorAll('td');
+          var mealType = cells[0] ? cells[0].textContent.trim() : '';
+          lines.push('  ' + mealType.toUpperCase());
+          for (var i = 1; i < cells.length; i++) {
+            var day = days[i-1] || '';
+            var rest = cells[i].querySelector('.sp-rest-name');
+            var desc = cells[i].querySelector('.sp-desc');
+            var kcal = cells[i].querySelector('.sp-kcal');
+            if (rest || desc) {
+              var restTxt = rest ? rest.textContent.trim() : '';
+              var descTxt = desc ? desc.textContent.trim() : '';
+              var kcalTxt = kcal ? ' (' + kcal.textContent.trim() + ')' : '';
+              lines.push('  ' + day + ': ' + (restTxt ? restTxt + ' — ' : '') + descTxt + kcalTxt);
+            }
           }
-        }
-        lines.push('');
-      });
+          lines.push('');
+        });
+      } else {
+        // Handle hybrid day-card format
+        mealOutEl.querySelectorAll('[style*="margin-bottom:16px"]').forEach(function(dayCard) {
+          var dayTitle = dayCard.querySelector('[style*="text-transform:uppercase"]');
+          if (dayTitle) lines.push('  ' + dayTitle.textContent.trim());
+          dayCard.querySelectorAll('[style*="border-radius:6px"]').forEach(function(mealCard) {
+            var mealHdr = mealCard.querySelector('[style*="text-transform:uppercase"]');
+            if (mealHdr) lines.push('    ' + mealHdr.textContent.trim());
+            var cols = mealCard.querySelectorAll('[style*="padding:8px 10px"]');
+            cols.forEach(function(col) {
+              var type = col.querySelector('[style*="font-weight:700"]');
+              var spot = col.querySelector('[style*="font-weight:600"][style*="color:#0082"]');
+              var meal = col.querySelector('[style*="color:#333"]');
+              var kcal = col.querySelector('[style*="kcal"]');
+              if (type && meal) {
+                lines.push('      ' + type.textContent.trim() + ': '
+                  + (spot ? spot.textContent.trim() + ' — ' : '')
+                  + meal.textContent.trim()
+                  + (kcal ? ' (' + kcal.textContent.trim() + ')' : ''));
+              }
+            });
+          });
+          lines.push('');
+        });
+      }
     }
   }
 
