@@ -2199,7 +2199,13 @@ function buildGroceryList() {
   .then(function(data) {
     clearTimeout(timeoutId);
     var raw = (data.content.find(function(b) { return b.type==='text'; })||{}).text || '{}';
-    var list = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    var cleanedRaw = raw.replace(/```json/g,'').replace(/```/g,'').trim();
+    var s = cleanedRaw.indexOf('{');
+    if (s > 0) cleanedRaw = cleanedRaw.slice(s);
+    var e = cleanedRaw.lastIndexOf('}');
+    if (e !== -1 && e < cleanedRaw.length - 1) cleanedRaw = cleanedRaw.slice(0, e + 1);
+    var list = JSON.parse(cleanedRaw);
+    if (typeof list !== 'object' || Array.isArray(list)) throw new Error('Invalid grocery format');
     var html = '';
     var weeklyTotal = '';
     var weeklyTotalLow = 0;
@@ -2278,7 +2284,8 @@ function buildGroceryList() {
     btn.textContent = 'Regenerate grocery list';
     btn.disabled = false;
   })
-  .catch(function() {
+  .catch(function(e) {
+    console.error('Grocery error:', e);
     document.getElementById('grocery-output').innerHTML = '<div style="font-size:13px;color:var(--text2);">Could not generate. Please try again.</div>';
     btn.textContent = 'Generate my grocery list';
     btn.disabled = false;
