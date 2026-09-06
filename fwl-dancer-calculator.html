@@ -1893,7 +1893,7 @@ function buildMealPlan() {
       + ' Use ONLY these spots: ' + rests.join(', ') + '.'
       + ' Each day includes: ' + mealList.join(', ') + '.'
       + ' One short meal name + restaurant per slot. Max 8 words per meal description. Vary across days.' + (previousMealPlanDishes.length > 0 ? ' Avoid: ' + previousMealPlanDishes.slice(0,10).join(', ') + '.' : '')
-      + ' Return ONLY a JSON object with EXACTLY these ' + selectedDays.length + ' keys: ' + daysStr + '. Each value is an array of meal objects: {meal, restaurant, calories, items, tags}. No extra days. No markdown.' + getCultureNote() + getDislikeNote() + getHealthNote() + getLanguageNote();
+      + ' Return ONLY a JSON object with EXACTLY these ' + selectedDays.length + ' keys: ' + daysStr + '. Each value is an array of meal objects: {meal, restaurant, calories, items, tags}. No extra days. No markdown. Keep all JSON string values on a single line — no line breaks inside strings.' + getCultureNote() + getDislikeNote() + getHealthNote() + getLanguageNote();
   } else if (mealType === 'grocery') {
     var stores = Array.from(selectedStores).concat(extraSpots);
     if (stores.length === 0) stores = allStores.slice(0,5);
@@ -1902,7 +1902,7 @@ function buildMealPlan() {
       + ' Use ONLY these stores: ' + (stores.length > 0 ? stores.join(', ') : 'local grocery stores in ' + userCity) + '.'
       + ' Each day includes: ' + mealList.join(', ') + '.'
       + ' Simple prep. One short meal name per slot. Max 8 words per description. ' + getVarietyNote() + ' ' + getBudgetNote() + (previousMealPlanDishes.length > 0 ? ' Avoid: ' + previousMealPlanDishes.slice(0,10).join(', ') + '.' : '')
-      + ' Return ONLY a JSON object with EXACTLY these ' + selectedDays.length + ' keys: ' + daysStr + '. Each value is an array: {meal, store, calories, items, tags}. No extra days. No markdown.' + getCultureNote() + getDislikeNote() + getHealthNote() + getLanguageNote();
+      + ' Return ONLY a JSON object with EXACTLY these ' + selectedDays.length + ' keys: ' + daysStr + '. Each value is an array: {meal, store, calories, items, tags}. No extra days. No markdown. Keep all JSON string values on a single line — no line breaks inside strings.' + getCultureNote() + getDislikeNote() + getHealthNote() + getLanguageNote();
   } else if (mealType === 'hybrid') {
     var eatOutRests = Array.from(selectedHybridRests).concat(extraSpots);
     var homeStores = Array.from(selectedHybridStores);
@@ -1920,7 +1920,7 @@ function buildMealPlan() {
       + ' {meal_type: "Breakfast|Lunch|Dinner|Snack", calories: number,'
       + ' eat_out: {meal: "dish name", restaurant: "name", items: "description", calories: number},'
       + ' home_cook: {meal: "dish name", store: "store name", items: "description", calories: number}}.'
-      + ' No extra days. No markdown. No other structure.' + getCultureNote() + getDislikeNote() + getHealthNote() + getLanguageNote();
+      + ' No extra days. No markdown. No other structure. Keep all JSON string values on a single line — no line breaks inside strings.' + getCultureNote() + getDislikeNote() + getHealthNote() + getLanguageNote();
   }
 
   console.log('Sending prompt:', prompt.substring(0,300));
@@ -1939,6 +1939,9 @@ function buildMealPlan() {
     var cleaned = raw
       .replace(/```json/g,'').replace(/```/g,'')  // remove markdown
       .replace(/,\s*}/g,'}').replace(/,\s*]/g,']')  // trailing commas
+      // Fix literal newlines inside JSON strings (between quotes)
+      .replace(/"([^"]*?)\n([^"]*?)"/g, function(m,a,b){ return '"' + a + ' ' + b + '"'; })
+      .replace(/"([^"]*?)\r([^"]*?)"/g, function(m,a,b){ return '"' + a + ' ' + b + '"'; })
       .trim();
     // Find the JSON object/array boundaries
     var jsonStart = cleaned.indexOf('{');
