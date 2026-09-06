@@ -2084,6 +2084,62 @@ function buildSpreadsheet(dayMeals) {
   var days = selectedDays.filter(function(d) { return dayMeals[d]; });
   if (days.length === 0) days = Object.keys(dayMeals).slice(0, selectedDays.length);
 
+  // Detect hybrid dual-option format
+  var firstDay = days[0];
+  var firstMeals = dayMeals[firstDay] || [];
+  var isHybrid = firstMeals.length > 0 && firstMeals[0] && firstMeals[0].eat_out;
+
+  if (isHybrid) {
+    // ── HYBRID: show both eat-out and home-cook side by side ──
+    var rowColors = {Breakfast:'#fff8f2',Lunch:'#f0f9ff',Dinner:'#f4f0ff',Snack:'#f0fff6'};
+    var hdrColors = {Breakfast:'#ffe8d6',Lunch:'#d6f0fa',Dinner:'#e2d6fa',Snack:'#d6f5e6'};
+    var txtColors = {Breakfast:'#CC5500',Lunch:'#007a96',Dinner:'#5c3d99',Snack:'#0a6640'};
+
+    var h = '<div class="sp-wrap">';
+    days.forEach(function(day) {
+      h += '<div style="margin-bottom:16px;">';
+      h += '<div style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--orange);padding:6px 0 5px;border-bottom:1.5px solid rgba(255,107,0,0.3);margin-bottom:6px;">' + day + '</div>';
+      var meals = dayMeals[day] || [];
+      mealTypes.forEach(function(mt) {
+        var m = meals.find(function(x) {
+          var t = (x.meal_type||'').toLowerCase();
+          return t === mt.toLowerCase() || t.includes(mt.toLowerCase().slice(0,5));
+        }) || meals[mealTypes.indexOf(mt)];
+        if (!m) return;
+        var bg = rowColors[mt] || '#faf8f6';
+        var hdr = hdrColors[mt] || '#eee';
+        var tc = txtColors[mt] || '#666';
+        var eo = m.eat_out || {};
+        var hc = m.home_cook || {};
+        h += '<div style="background:' + bg + ';border:0.5px solid #e8e4de;border-radius:6px;margin-bottom:6px;overflow:hidden;">';
+        h += '<div style="background:' + hdr + ';padding:4px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:' + tc + ';">' + mt + (m.calories ? ' — ~' + m.calories + ' kcal' : '') + '</div>';
+        h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">';
+        // Eat-out
+        h += '<div style="padding:8px 10px;border-right:0.5px solid #e8e4de;">';
+        h += '<div style="font-size:10px;font-weight:700;color:var(--orange);margin-bottom:3px;">🍽️ Eat Out</div>';
+        if (eo.restaurant) h += '<div style="font-size:11px;font-weight:600;color:#0082B4;margin-bottom:2px;">' + eo.restaurant + '</div>';
+        if (eo.meal) h += '<div style="font-size:11px;color:#333;margin-bottom:2px;">' + eo.meal + '</div>';
+        if (eo.items) h += '<div style="font-size:10px;color:#666;">' + eo.items + '</div>';
+        if (eo.calories) h += '<span class="sp-kcal">~' + eo.calories + ' kcal</span>';
+        h += '</div>';
+        // Home-cook
+        h += '<div style="padding:8px 10px;">';
+        h += '<div style="font-size:10px;font-weight:700;color:#0a6640;margin-bottom:3px;">🏠 Home Cook</div>';
+        if (hc.store) h += '<div style="font-size:11px;font-weight:600;color:#0082B4;margin-bottom:2px;">' + hc.store + '</div>';
+        if (hc.meal) h += '<div style="font-size:11px;color:#333;margin-bottom:2px;">' + hc.meal + '</div>';
+        if (hc.items) h += '<div style="font-size:10px;color:#666;">' + hc.items + '</div>';
+        if (hc.calories) h += '<span class="sp-kcal" style="background:rgba(10,102,64,0.1);color:#0a6640;">~' + hc.calories + ' kcal</span>';
+        h += '</div>';
+        h += '</div></div>';
+      });
+      h += '</div>';
+    });
+    h += '</div>';
+    h += '<div style="font-size:12px;color:#aaa;padding:0.4rem 0 0.75rem;">Target: ' + userCalories.toLocaleString() + ' kcal/day</div>';
+    return h;
+  }
+
+  // ── STANDARD TABLE (togo / grocery) ──────────────────────────────
   var h = '<div class="sp-wrap"><table class="sp-table"><thead><tr><th></th>';
   days.forEach(function(d) { h += '<th>' + d + '</th>'; });
   h += '</tr></thead><tbody>';
@@ -2093,16 +2149,18 @@ function buildSpreadsheet(dayMeals) {
     h += '<tr class="' + rowClass + '"><td>' + mt + '</td>';
     days.forEach(function(d) {
       var meals = dayMeals[d] || [];
-      var m = meals.find(function(x) { return (x.meal||x.time||'').toLowerCase().includes(mt.toLowerCase()); });
+      var m = meals.find(function(x) {
+        var t = (x.meal_type || x.meal || '').toLowerCase();
+        return t.includes(mt.toLowerCase().slice(0,5));
+      }) || meals[mealTypes.indexOf(mt)];
       if (m) {
         var loc = m.restaurant || m.store || '';
-        var isHome = m.type === 'home';
         var fav = getFavicon(loc);
         h += '<td>'
-          + '<div class="sp-rest"><img src="' + fav + '" width="14" height="14" style="border-radius:2px;flex-shrink:0;" onerror="this.style.display=\'none\'">'
-          + '<span class="sp-rest-name">' + loc + '</span></div>'
-          + '<div class="sp-desc">' + (m.items||'') + '</div>'
-          + '<div>' + (isHome ? '<span class="sp-home">Home cook</span>' : '<span class="sp-kcal">~' + Math.round(m.calories||0) + ' kcal</span>') + '</div>'
+          + (loc ? '<div class="sp-rest"><img src="' + fav + '" width="14" height="14" style="border-radius:2px;flex-shrink:0;" onerror="this.style.display=&quot;none&quot;"><span class="sp-rest-name">' + loc + '</span></div>' : '')
+          + '<div class="sp-desc">' + (m.meal || m.items || '') + '</div>'
+          + (m.calories ? '<span class="sp-kcal">~' + Math.round(m.calories) + ' kcal</span>' : '')
+          + (m.type === 'home' || m.store ? '<span class="sp-home">Home cook</span>' : '')
           + '</td>';
       } else {
         h += '<td style="color:#ccc;">-</td>';
@@ -2113,7 +2171,7 @@ function buildSpreadsheet(dayMeals) {
 
   h += '<tr class="sp-total"><td>Total</td>';
   days.forEach(function(d) {
-    var total = (dayMeals[d]||[]).reduce(function(s,m) { return s+(m.calories||0); },0);
+    var total = (dayMeals[d]||[]).reduce(function(s,m){return s+(parseInt(m.calories)||0);},0);
     h += '<td>~' + Math.round(total) + ' kcal</td>';
   });
   h += '</tr></tbody></table></div>';
@@ -2121,7 +2179,7 @@ function buildSpreadsheet(dayMeals) {
   return h;
 }
 
-// ── GROCERY LIST ─────────────────────────────────────────────────────────────
+
 function buildGroceryList() {
   var btn = document.getElementById('grocery-btn');
   btn.disabled = true;
