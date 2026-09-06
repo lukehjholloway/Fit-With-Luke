@@ -1892,7 +1892,7 @@ function buildMealPlan() {
       + ' Create a to-go meal plan. EXACTLY these days only: ' + daysStr + '. DO NOT add any other days.'
       + ' Use ONLY these spots: ' + rests.join(', ') + '.'
       + ' Each day includes: ' + mealList.join(', ') + '.'
-      + ' Keep it simple and realistic. One specific item per meal. Real menu items. Vary across days.' + (previousMealPlanDishes.length > 0 ? ' Avoid: ' + previousMealPlanDishes.slice(0,10).join(', ') + '.' : '')
+      + ' One short meal name + restaurant per slot. Max 8 words per meal description. Vary across days.' + (previousMealPlanDishes.length > 0 ? ' Avoid: ' + previousMealPlanDishes.slice(0,10).join(', ') + '.' : '')
       + ' Return ONLY a JSON object with EXACTLY these ' + selectedDays.length + ' keys: ' + daysStr + '. Each value is an array of meal objects: {meal, restaurant, calories, items, tags}. No extra days. No markdown.' + getCultureNote() + getDislikeNote() + getHealthNote() + getLanguageNote();
   } else if (mealType === 'grocery') {
     var stores = Array.from(selectedStores).concat(extraSpots);
@@ -1901,7 +1901,7 @@ function buildMealPlan() {
       + ' Create a grocery store home-cook meal plan. EXACTLY these days only: ' + daysStr + '. DO NOT add any other days.'
       + ' Use ONLY these stores: ' + (stores.length > 0 ? stores.join(', ') : 'local grocery stores in ' + userCity) + '.'
       + ' Each day includes: ' + mealList.join(', ') + '.'
-      + ' Simple prep (under 10 min). Real grocery items with quantities. ' + getVarietyNote() + ' ' + getBudgetNote() + (previousMealPlanDishes.length > 0 ? ' Avoid: ' + previousMealPlanDishes.slice(0,10).join(', ') + '.' : '')
+      + ' Simple prep. One short meal name per slot. Max 8 words per description. ' + getVarietyNote() + ' ' + getBudgetNote() + (previousMealPlanDishes.length > 0 ? ' Avoid: ' + previousMealPlanDishes.slice(0,10).join(', ') + '.' : '')
       + ' Return ONLY a JSON object with EXACTLY these ' + selectedDays.length + ' keys: ' + daysStr + '. Each value is an array: {meal, store, calories, items, tags}. No extra days. No markdown.' + getCultureNote() + getDislikeNote() + getHealthNote() + getLanguageNote();
   } else if (mealType === 'hybrid') {
     var eatOutRests = Array.from(selectedHybridRests).concat(extraSpots);
@@ -1925,10 +1925,10 @@ function buildMealPlan() {
 
   console.log('Sending prompt:', prompt.substring(0,300));
   var mealController = new AbortController();
-  var timeoutId = setTimeout(function() { mealController.abort(); }, 55000);
+  var timeoutId = setTimeout(function() { mealController.abort(); }, 90000);
   fetch(API_URL, {
     method:'POST', headers:{'Content-Type':'application/json','x-fwl-key':FWL_KEY},
-    body:JSON.stringify({model:'claude-sonnet-4-5-20250929', max_tokens:6000, messages:[{role:'user', content:prompt}]}),
+    body:JSON.stringify({model:'claude-sonnet-4-5-20250929', max_tokens:3000, messages:[{role:'user', content:prompt}]}),
     signal: mealController.signal
   })
   .then(function(r) { return r.json(); })
@@ -2139,10 +2139,10 @@ function buildGroceryList() {
   var prompt = 'Create a weekly grocery list for a ' + danceLabel + ' dancer. Goal: ' + goalMode + '. Calories: ' + userCalories + ' kcal. Protein: ' + userProtein + 'g, Carbs: ' + userCarbs + 'g, Fat: ' + userFat + 'g. In ' + userCity + '. ' + getAllergyNote() + '. ' + getDietNote() + ' Anti-inflammatory and performance-focused. ' + getBudgetNote() + mealPlanNote + ' Organize by: Proteins, Carbohydrates, Fruits, Vegetables, Healthy Fats, Hydration. For each item include a realistic local price estimate in the local currency of ' + userCity + '. CRITICAL FORMAT: each string MUST be exactly: "Item - quantity (~SYMBOL+NUMBER)" where SYMBOL is the local currency symbol and NUMBER is digits only. Example for USD: "Chicken breast - 1.5kg (~$12)", for CNY: "Brown rice - 1kg (~¥15)", for BRL: "Frango - 1kg (~R$18)", for EUR: "Poulet - 1kg (~€8)". Price must always be inside parentheses with ~ before the symbol. No other format. Arrays of plain strings only. No nested objects. No markdown. At the end add a key "Weekly Total" with a single string like "~¥350-420" or "~$85-110".';
   console.log('Sending prompt:', prompt.substring(0,300));
   var mealController = new AbortController();
-  var timeoutId = setTimeout(function() { mealController.abort(); }, 55000);
+  var timeoutId = setTimeout(function() { mealController.abort(); }, 90000);
   fetch(API_URL, {
     method:'POST', headers:{'Content-Type':'application/json','x-fwl-key':FWL_KEY},
-    body:JSON.stringify({model:'claude-sonnet-4-5-20250929', max_tokens:6000, messages:[{role:'user', content:prompt}]}),
+    body:JSON.stringify({model:'claude-sonnet-4-5-20250929', max_tokens:3000, messages:[{role:'user', content:prompt}]}),
     signal: mealController.signal
   })
   .then(function(r) { return r.json(); })
