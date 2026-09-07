@@ -3004,7 +3004,8 @@ function exportPDF() {
   var css = ':root{--gold:#FCA305;--gold-mid:#FB8F03;--gold-dk:#AB5801;--black:#080600;--ink:#1A1400;--paper:#FDFAF3;--warm-mid:#E8D9A8;--warm-dk:#C4AE7A;--white:#FFFFFF;}'
     + '*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}'
     + 'body{font-family:sans-serif;background:var(--paper);color:var(--ink);font-size:11pt;line-height:1.6;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'
-    + '@page{size:A4;margin:0;}'
+    + '@page{size:A4 portrait;margin:0;}'
+    + '@page meal-landscape{size:A4 landscape;margin:0;}'
     + '.page{width:210mm;min-height:297mm;position:relative;overflow:hidden;page-break-after:always;}'
     + '.page:last-child{page-break-after:avoid;}'
     + '.cover{background:var(--black);display:flex;flex-direction:column;min-height:297mm;}'
@@ -3033,6 +3034,10 @@ function exportPDF() {
     + '.cf{margin-top:auto;padding:4mm 14mm;border-top:0.5px solid rgba(251,143,3,0.2);display:flex;justify-content:space-between;align-items:center;}'
     + '.cfl{font-size:7pt;color:rgba(255,255,255,0.3);}.cfr{font-size:8pt;font-weight:700;letter-spacing:0.15em;color:var(--gold-mid);text-transform:uppercase;}'
     + '.inner{background:var(--paper);padding:10mm 14mm 18mm;}'
+    + '.meal-pg{width:100%;min-height:100%;}'
+    + '.meal-pg .sp-table{font-size:7.5pt;width:100%;}'
+    + '.meal-pg .sp-table th,.meal-pg .sp-table td{padding:4pt 5pt;}'
+    + '.meal-pg .sp-wrap{width:100%;}'
     + '.pgh{display:flex;justify-content:space-between;align-items:center;padding-bottom:3mm;margin-bottom:6mm;border-bottom:1px solid var(--warm-mid);}'
     + '.pgb{font-size:10pt;font-weight:700;color:var(--gold-dk);letter-spacing:0.08em;text-transform:uppercase;}'
     + '.pgr{font-size:7.5pt;color:var(--warm-dk);}'
@@ -3092,7 +3097,7 @@ function exportPDF() {
     + '</div>'
     + '<div class="cf"><span class="cfl">fitwithluke.com &middot; Not a substitute for medical advice</span><span class="cfr">Dream. Prepare. Perform.</span></div>'
     + '</div></div>';
-  var mealPage = mealHTML ? ('<div class="page inner"><div class="pgh"><span class="pgb">Fit With Luke</span><span class="pgr">' + fullName + ' &middot; ' + dateStr + '</span></div><div class="sh"><div class="sb"></div><div><div class="st">Your Meal Plan</div><div class="ss">' + dance + ' &middot; ' + city + '</div></div></div><div class="note">These meal suggestions are a <strong>guide to help you hit your nutritional goals</strong> &mdash; not a strict prescription.</div>' + mealHTML + footer + '</div>') : '';
+  var mealPage = mealHTML ? ('<style>.meal-pg{page:meal-landscape;}</style><div class="meal-pg" style="background:var(--paper);padding:8mm 12mm 16mm;position:relative;overflow:hidden;page-break-after:always;"><div class="pgh"><span class="pgb">Fit With Luke</span><span class="pgr">' + fullName + ' &middot; ' + dateStr + '</span></div><div class="sh"><div class="sb"></div><div><div class="st">Your Meal Plan</div><div class="ss">' + dance + ' &middot; ' + city + '</div></div></div><div class="note">These meal suggestions are a <strong>guide to help you hit your nutritional goals</strong> &mdash; not a strict prescription.</div>' + mealHTML + footer + '</div>') : '';
   var grocPage = (grocHTML || snackHTML) ? ('<div class="page inner"><div class="pgh"><span class="pgb">Fit With Luke</span><span class="pgr">' + fullName + ' &middot; ' + dateStr + '</span></div>' + (grocHTML ? '<div class="sh"><div class="sb"></div><div><div class="st">Weekly Grocery List</div><div class="ss">' + city + '</div></div></div>' + grocHTML : '') + (snackHTML ? '<div class="sh" style="margin-top:5mm;"><div class="sb"></div><div><div class="st">Practice Snacks</div><div class="ss">' + practiceLabel + '</div></div></div>' + snackHTML : '') + footer + '</div>') : '';
   var suppPage = (suppHTML || protHTML) ? ('<div class="page inner"><div class="pgh"><span class="pgb">Fit With Luke</span><span class="pgr">' + fullName + ' &middot; ' + dateStr + '</span></div>' + (suppHTML ? '<div class="sh"><div class="sb"></div><div><div class="st">Supplements &amp; Vitamins</div></div></div>' + suppHTML : '') + (protHTML ? '<div class="sh" style="margin-top:5mm;"><div class="sb"></div><div><div class="st">Training Nutrition Protocols</div></div></div>' + protHTML : '') + footer + '</div>') : '';
   var htmlContent = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><style>' + css + '</style></head><body>' + cover + mealPage + grocPage + suppPage + '</body></html>';
