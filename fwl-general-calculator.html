@@ -2930,6 +2930,8 @@ function exportPDF() {
 
   /* ── MEAL PLAN TABLE ── */
   .meal-wrap { overflow: visible; margin-bottom: 10pt; }
+  @page landscape { size: A4 landscape; margin: 12mm 12mm 16mm; }
+  .meal-plan-landscape { page: landscape; page-break-before: always; page-break-after: always; }
   .sp-table { border-collapse: collapse; width: 100%; font-size: 8pt; }
   .sp-table th { background: #f0ece8; color: #DC5A00; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 8pt; letter-spacing: 0.08em; text-transform: uppercase; padding: 5pt 6pt; border: 0.5pt solid #ddd; text-align: left; }
   .sp-table th:first-child { background: #e8e4de; color: #999; width: 18mm; }
@@ -3059,8 +3061,9 @@ function exportPDF() {
 
 </div>
 
-<!-- ══ PAGE 3: MEAL PLAN ══ -->
-${mealTableHTML ? `<div class="page-header"><span class="brand">Fit With Luke</span><span class="site">fitwithluke.com · Personalized Nutrition Plan</span></div>
+<!-- ══ PAGE 3: MEAL PLAN (LANDSCAPE) ══ -->
+${mealTableHTML ? `<div class="meal-plan-landscape">
+  <div class="page-header"><span class="brand">Fit With Luke</span><span class="site">fitwithluke.com · Personalized Nutrition Plan</span></div>
   <div class="section-title">Your Meal Plan</div>
   <div class="disclaimer">These meal suggestions are a <strong>guide to help you hit your nutritional goals</strong> — not a strict prescription. Swap and adjust as needed.</div>
   <div class="meal-wrap">${mealTableHTML}</div>
