@@ -1875,10 +1875,10 @@ function buildMealPlan() {
     if (homeStores.length === 0 && hybridStores.length > 0) homeStores = hybridStores.slice(0,4);
     prompt = 'You are a nutritionist. Client is in ' + userCity + '. Goal: ' + goalMode + '. Calories: ' + totalIncluded + ' kcal. ' + getAllergyNote() + '. ' + getDietNote()
       + ' Create a HYBRID meal plan. EXACTLY these days only: ' + daysStr + '. DO NOT add any other days.'
-      + (outMeals.length > 0 ? ' EAT OUT meals (' + outMeals.join(', ') + ') - use these restaurants: ' + (eatOutRests.length > 0 ? eatOutRests.join(', ') : 'any restaurant in ' + userCity) + '.' : '')
-      + (homeMeals.length > 0 ? ' HOME-COOKED meals (' + homeMeals.join(', ') + ') - use these stores: ' + (homeStores.length > 0 ? homeStores.join(', ') : 'local grocery stores') + '.' : '')
+      + (outMeals.length > 0 ? ' EAT OUT meals (' + outMeals.join(', ') + ') - use these restaurants: ' + (eatOutRests.length > 0 ? eatOutRests.join(', ') : 'any restaurant in ' + userCity) + '. For EACH eat-out meal slot, give TWO different real menu options (different dish and/or different restaurant from the list) so the client can pick, as an "options" array with exactly 2 objects: {restaurant, items, calories}. Do not include a top-level restaurant/items/calories field on eat-out meals — only the "options" array.' : '')
+      + (homeMeals.length > 0 ? ' HOME-COOKED meals (' + homeMeals.join(', ') + ') - use these stores: ' + (homeStores.length > 0 ? homeStores.join(', ') : 'local grocery stores') + '. Home-cooked meals keep the normal single-option format (one store, one dish).' : '')
       + ' Each day includes: ' + mealList.join(', ') + '. ' + getVarietyNote() + ' ' + getBudgetNote()
-      + ' Return ONLY a JSON object with EXACTLY these ' + selectedDays.length + ' keys: ' + daysStr + '. Each value is an array: {meal, restaurant, calories, items, tags, type ("eat-out" or "home")}. No extra days. No markdown.' + getCultureNote() + getDislikeNote() + getHealthNote() + getLanguageNote();
+      + ' Return ONLY a JSON object with EXACTLY these ' + selectedDays.length + ' keys: ' + daysStr + '. Each value is an array of meal objects. Home-cooked meal: {meal, store, calories, items, tags, type:"home"}. Eat-out meal: {meal, type:"eat-out", options:[{restaurant, items, calories}, {restaurant, items, calories}]}. No extra days. No markdown.' + getCultureNote() + getDislikeNote() + getHealthNote() + getLanguageNote();
   }
 
   console.log('Sending prompt:', prompt.substring(0,300));
@@ -1996,15 +1996,30 @@ function buildSpreadsheet(dayMeals) {
       var meals = dayMeals[d] || [];
       var m = meals.find(function(x) { return (x.meal||x.time||'').toLowerCase().includes(mt.toLowerCase()); });
       if (m) {
-        var loc = m.restaurant || m.store || '';
         var isHome = m.type === 'home';
-        var fav = getFavicon(loc);
-        h += '<td>'
-          + '<div class="sp-rest"><img src="' + fav + '" width="14" height="14" style="border-radius:2px;flex-shrink:0;" onerror="this.style.display=\'none\'">'
-          + '<span class="sp-rest-name">' + loc + '</span></div>'
-          + '<div class="sp-desc">' + (m.items||'') + '</div>'
-          + '<div>' + (isHome ? '<span class="sp-home">Home cook</span>' : '<span class="sp-kcal">~' + Math.round(m.calories||0) + ' kcal</span>') + '</div>'
-          + '</td>';
+        if (!isHome && Array.isArray(m.options) && m.options.length > 0) {
+          var opts = m.options.slice(0,2);
+          var optsHtml = opts.map(function(opt) {
+            var oloc = opt.restaurant || '';
+            var ofav = getFavicon(oloc);
+            return '<div>'
+              + '<div class="sp-rest"><img src="' + ofav + '" width="14" height="14" style="border-radius:2px;flex-shrink:0;" onerror="this.style.display=\'none\'">'
+              + '<span class="sp-rest-name">' + oloc + '</span></div>'
+              + '<div class="sp-desc">' + (opt.items||'') + '</div>'
+              + '<div><span class="sp-kcal">~' + Math.round(opt.calories||0) + ' kcal</span></div>'
+              + '</div>';
+          }).join('<div style="font-size:9px;color:#aaa;text-align:center;margin:4px 0;font-style:italic;">or</div>');
+          h += '<td>' + optsHtml + '</td>';
+        } else {
+          var loc = m.restaurant || m.store || '';
+          var fav = getFavicon(loc);
+          h += '<td>'
+            + '<div class="sp-rest"><img src="' + fav + '" width="14" height="14" style="border-radius:2px;flex-shrink:0;" onerror="this.style.display=\'none\'">'
+            + '<span class="sp-rest-name">' + loc + '</span></div>'
+            + '<div class="sp-desc">' + (m.items||'') + '</div>'
+            + '<div>' + (isHome ? '<span class="sp-home">Home cook</span>' : '<span class="sp-kcal">~' + Math.round(m.calories||0) + ' kcal</span>') + '</div>'
+            + '</td>';
+        }
       } else {
         h += '<td style="color:#ccc;">-</td>';
       }
@@ -2014,7 +2029,11 @@ function buildSpreadsheet(dayMeals) {
 
   h += '<tr class="sp-total"><td>Total</td>';
   days.forEach(function(d) {
-    var total = (dayMeals[d]||[]).reduce(function(s,m) { return s+(m.calories||0); },0);
+    var total = (dayMeals[d]||[]).reduce(function(s,m) {
+      var cal = m.calories;
+      if (!cal && Array.isArray(m.options) && m.options.length > 0) cal = m.options[0].calories;
+      return s+(cal||0);
+    },0);
     h += '<td>~' + Math.round(total) + ' kcal</td>';
   });
   h += '</tr></tbody></table></div>';
@@ -2640,14 +2659,18 @@ function buildEmailBody() {
         lines.push('  ' + mealType.toUpperCase());
         for (var i = 1; i < cells.length; i++) {
           var day = days[i-1] || '';
-          var rest = cells[i].querySelector('.sp-rest-name');
-          var desc = cells[i].querySelector('.sp-desc');
-          var kcal = cells[i].querySelector('.sp-kcal');
-          if (rest || desc) {
-            var restTxt = rest ? rest.textContent.trim() : '';
-            var descTxt = desc ? desc.textContent.trim() : '';
-            var kcalTxt = kcal ? ' (' + kcal.textContent.trim() + ')' : '';
-            lines.push('  ' + day + ': ' + (restTxt ? restTxt + ' — ' : '') + descTxt + kcalTxt);
+          var restEls = cells[i].querySelectorAll('.sp-rest-name');
+          var descEls = cells[i].querySelectorAll('.sp-desc');
+          var kcalEls = cells[i].querySelectorAll('.sp-kcal');
+          if (restEls.length > 0 || descEls.length > 0) {
+            var parts = [];
+            for (var oi = 0; oi < Math.max(restEls.length, descEls.length, 1); oi++) {
+              var restTxt = restEls[oi] ? restEls[oi].textContent.trim() : '';
+              var descTxt = descEls[oi] ? descEls[oi].textContent.trim() : '';
+              var kcalTxt = kcalEls[oi] ? ' (' + kcalEls[oi].textContent.trim() + ')' : '';
+              parts.push((restTxt ? restTxt + ' — ' : '') + descTxt + kcalTxt);
+            }
+            lines.push('  ' + day + ': ' + parts.join('  OR  '));
           }
         }
         lines.push('');
