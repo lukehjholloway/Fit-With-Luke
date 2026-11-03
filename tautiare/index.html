@@ -15,6 +15,7 @@
   body{background:var(--black);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
   .wrap{max-width:960px;margin:0 auto;padding:0 20px}
   header.hero{padding:56px 0 44px;text-align:center;background:radial-gradient(ellipse at top,#2a1d08 0%,var(--black) 65%)}
+  .logo{display:block;width:min(100%,760px);height:auto;margin:0 auto 4px;mix-blend-mode:lighten}
   .brand{letter-spacing:.28em;text-transform:uppercase;font-size:.8rem;color:var(--gold);font-weight:700}
   h1{font-size:clamp(2rem,7vw,3.4rem);line-height:1.1;margin:14px 0 14px;font-weight:800}
   h1 span{color:var(--orange)}
@@ -55,7 +56,7 @@
   body.promo-on .promo-only{display:block}
   body.promo-on span.promo-only{display:inline}
   .topbar{position:sticky;top:0;z-index:50;background:linear-gradient(90deg,var(--gold),var(--orange));color:#111;text-align:center;padding:9px 14px;font-weight:700;font-size:.9rem;line-height:1.3}
-  .topbar a{color:#111;text-decoration:underline}
+  .topbar a{color:#111;text-decoration:underline;white-space:nowrap}
   .topbar .t{font-variant-numeric:tabular-nums;white-space:nowrap}
   .promo{padding:36px 0 8px}
   .promo-box{border:1.5px solid var(--gold);border-radius:22px;padding:32px 22px;text-align:center;background:radial-gradient(ellipse at top,#33230a 0%,#150e04 70%);box-shadow:0 12px 50px rgba(242,106,27,.18)}
@@ -80,12 +81,12 @@
 <body>
 
 <div class="topbar promo-only" id="topbar">
-  Ta'utiare Discount ends in <span class="t" id="barTime"></span> &middot; <a href="#taiutiare">Claim it</a>
+  Ta'utiare ends in <span class="t" id="barTime"></span> &middot; <a href="#taiutiare">Claim it</a>
 </div>
 
 <header class="hero">
   <div class="wrap">
-    <div class="brand">Fit With Luke</div>
+    <img class="logo" src="/tautiare/fwl-logo.jpg" width="1200" height="358" alt="FWL Fit With Luke: Polynesian Dance Strength Training">
     <h1>Training <span>Pricing</span></h1>
     <p class="sub">Choose how you want to train: 1:1 online coaching, in-person sessions, or a hybrid of both. Group pricing is available for dance schools worldwide.</p>
     <a class="btn btn-primary" href="#dropin">See Pricing</a>
