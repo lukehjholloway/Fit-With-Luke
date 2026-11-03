@@ -70,9 +70,9 @@
   .deals{display:grid;gap:10px;max-width:520px;margin:0 auto 24px;text-align:left}
   .deal{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--black);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:.95rem}
   .deal em{font-style:normal;white-space:nowrap}
-  .deal s,.was{color:var(--muted);font-weight:500;text-decoration:line-through;margin-right:4px}
+  .deal s,.was{color:var(--muted);font-weight:500;text-decoration:line-through;text-decoration-color:var(--orange);text-decoration-thickness:2px;margin-right:4px}
   .deal strong{color:var(--gold)}
-  .price .was{font-size:1.2rem}
+  .price .was{font-size:1.5rem;text-decoration-color:var(--orange);text-decoration-thickness:2px;margin-right:10px}
   .lifetime{display:inline-block;margin-top:8px;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);font-weight:700}
   footer{border-top:1px solid var(--line);padding:22px 0;text-align:center;color:var(--muted);font-size:.8rem}
 </style>
@@ -97,7 +97,7 @@
     <div class="promo-box">
       <div class="tag">Limited Time</div>
       <h2>The <span>Ta'utiare</span> Discount</h2>
-      <p class="lead">Set up your appointment before the clock runs out and lock in these rates for life.</p>
+      <p class="lead">Set an appointment with me to get to know each other and let's make an action plan. Book before the clock runs out and lock in these rates for life.</p>
       <div class="clock" aria-live="off">
         <div><b id="cD">0</b><span>Days</span></div>
         <div><b id="cH">00</b><span>Hours</span></div>
@@ -111,7 +111,7 @@
         <div class="deal"><span>Drop-in, 3+ dancers</span><em><s>$35</s> <strong>$25</strong> /dancer</em></div>
         <div class="deal"><span>1:1 online, after enrollment</span><em><s>$297</s> <strong>$225</strong> /mo</em></div>
       </div>
-      <a class="btn btn-primary" href="#start" data-interest="Ta'utiare Discount">Book Before Time Runs Out</a>
+      <a class="btn btn-primary" href="#start" data-interest="Ta'utiare Discount">Set Your Appointment</a>
     </div>
   </div>
 </section>
