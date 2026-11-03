@@ -50,10 +50,38 @@
   .cta{text-align:center;padding:56px 0 70px;background:radial-gradient(ellipse at bottom,#2a1d08 0%,var(--black) 70%)}
   .cta h2{font-size:2rem}
   .cta p{color:var(--muted);margin:8px auto 24px;max-width:480px}
+  /* Ta'utiare promo */
+  .promo-only{display:none}
+  body.promo-on .promo-only{display:block}
+  body.promo-on span.promo-only{display:inline}
+  .topbar{position:sticky;top:0;z-index:50;background:linear-gradient(90deg,var(--gold),var(--orange));color:#111;text-align:center;padding:9px 14px;font-weight:700;font-size:.9rem;line-height:1.3}
+  .topbar a{color:#111;text-decoration:underline}
+  .topbar .t{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .promo{padding:36px 0 8px}
+  .promo-box{border:1.5px solid var(--gold);border-radius:22px;padding:32px 22px;text-align:center;background:radial-gradient(ellipse at top,#33230a 0%,#150e04 70%);box-shadow:0 12px 50px rgba(242,106,27,.18)}
+  .promo-box h2{font-size:clamp(1.6rem,6vw,2.4rem);margin-bottom:8px}
+  .promo-box h2 span{color:var(--orange)}
+  .promo-box .lead{color:var(--muted);max-width:520px;margin:0 auto 22px}
+  .clock{display:flex;justify-content:center;gap:10px;margin:0 auto 10px;max-width:440px}
+  .clock div{flex:1;background:var(--black);border:1px solid var(--line);border-radius:14px;padding:12px 4px}
+  .clock b{display:block;font-size:clamp(1.6rem,8vw,2.4rem);line-height:1;color:var(--gold);font-variant-numeric:tabular-nums}
+  .clock span{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .ends{color:var(--muted);font-size:.85rem;margin-bottom:22px}
+  .deals{display:grid;gap:10px;max-width:520px;margin:0 auto 24px;text-align:left}
+  .deal{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--black);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:.95rem}
+  .deal em{font-style:normal;white-space:nowrap}
+  .deal s,.was{color:var(--muted);font-weight:500;text-decoration:line-through;margin-right:4px}
+  .deal strong{color:var(--gold)}
+  .price .was{font-size:1.2rem}
+  .lifetime{display:inline-block;margin-top:8px;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);font-weight:700}
   footer{border-top:1px solid var(--line);padding:22px 0;text-align:center;color:var(--muted);font-size:.8rem}
 </style>
 </head>
 <body>
+
+<div class="topbar promo-only" id="topbar">
+  Ta'utiare Discount ends in <span class="t" id="barTime"></span> &middot; <a href="#taiutiare">Claim it</a>
+</div>
 
 <header class="hero">
   <div class="wrap">
@@ -64,6 +92,30 @@
   </div>
 </header>
 
+<section class="promo promo-only" id="taiutiare">
+  <div class="wrap">
+    <div class="promo-box">
+      <div class="tag">Limited Time</div>
+      <h2>The <span>Ta'utiare</span> Discount</h2>
+      <p class="lead">Set up your appointment before the clock runs out and lock in these rates for life.</p>
+      <div class="clock" aria-live="off">
+        <div><b id="cD">0</b><span>Days</span></div>
+        <div><b id="cH">00</b><span>Hours</span></div>
+        <div><b id="cM">00</b><span>Min</span></div>
+        <div><b id="cS">00</b><span>Sec</span></div>
+      </div>
+      <p class="ends">Ends Tuesday, November 10 at 11:59 PM Pacific Time</p>
+      <div class="deals">
+        <div class="deal"><span>Drop-in, 1 dancer</span><em><s>$65</s> <strong>$50</strong></em></div>
+        <div class="deal"><span>Drop-in, 2 dancers</span><em><s>$45</s> <strong>$30</strong> /dancer</em></div>
+        <div class="deal"><span>Drop-in, 3+ dancers</span><em><s>$35</s> <strong>$25</strong> /dancer</em></div>
+        <div class="deal"><span>1:1 online, after enrollment</span><em><s>$297</s> <strong>$225</strong> /mo</em></div>
+      </div>
+      <a class="btn btn-primary" href="#start" data-interest="Ta'utiare Discount">Book Before Time Runs Out</a>
+    </div>
+  </div>
+</section>
+
 <section id="dropin">
   <div class="wrap">
     <h2>Drop-In Sessions</h2>
@@ -72,19 +124,19 @@
       <div class="card">
         <div class="tag">Solo</div>
         <h3>1 Dancer</h3>
-        <div class="price">$65</div>
+        <div class="price"><span class="amt" data-promo="$50">$65</span></div>
         <p class="note">Per session</p>
       </div>
       <div class="card featured">
         <div class="tag">Train Together</div>
         <h3>2 Dancers</h3>
-        <div class="price">$45 <small>per dancer</small></div>
+        <div class="price"><span class="amt" data-promo="$30">$45</span> <small>per dancer</small></div>
         <p class="note">Per session</p>
       </div>
       <div class="card">
         <div class="tag">Best Value</div>
         <h3>3+ Dancers</h3>
-        <div class="price">$35 <small>per dancer</small></div>
+        <div class="price"><span class="amt" data-promo="$25">$35</span> <small>per dancer</small></div>
         <p class="note">Per session</p>
       </div>
     </div>
@@ -103,7 +155,7 @@
         <h3>1:1 Online Coaching</h3>
         <p class="desc">Personalized programming and direct support, wherever you are.</p>
         <div class="price">$350 <small>first month</small></div>
-        <p class="note">Includes enrollment. Then $297/month.</p>
+        <p class="note">Includes enrollment. Then <span class="amt" data-promo="$225">$297</span>/month<span class="promo-only"> for life with the Ta'utiare Discount</span>.</p>
         <ul class="list">
           <li>Custom training plan built for you</li>
           <li>Ongoing check-ins and adjustments</li>
@@ -186,6 +238,38 @@
   // Set your contact link here (email, Instagram DM, Calendly, etc.)
   var CONTACT = "https://calendly.com/fitwithluke/30min";
   document.getElementById("yr").textContent = new Date().getFullYear();
+
+  // Ta'utiare Discount: ends Nov 10, 2026 at 11:59 PM Pacific (PST, UTC-8)
+  var DEADLINE = new Date("2026-11-10T23:59:00-08:00").getTime();
+  var amts = document.querySelectorAll(".amt[data-promo]");
+  amts.forEach(function(el){ el.dataset.regular = el.textContent; });
+  var promoOn = false;
+  function setPromo(on){
+    if (on === promoOn) return;
+    promoOn = on;
+    document.body.classList.toggle("promo-on", on);
+    amts.forEach(function(el){
+      el.innerHTML = on
+        ? '<s class="was">' + el.dataset.regular + '</s>' + el.dataset.promo
+        : el.dataset.regular;
+    });
+  }
+  function pad(n){ return n < 10 ? "0" + n : "" + n; }
+  function tick(){
+    var left = DEADLINE - Date.now();
+    if (left <= 0){ setPromo(false); clearInterval(timer); return; }
+    setPromo(true);
+    var s = Math.floor(left / 1000);
+    var d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600),
+        m = Math.floor(s % 3600 / 60), sec = s % 60;
+    document.getElementById("cD").textContent = d;
+    document.getElementById("cH").textContent = pad(h);
+    document.getElementById("cM").textContent = pad(m);
+    document.getElementById("cS").textContent = pad(sec);
+    document.getElementById("barTime").textContent = d + "d " + pad(h) + "h " + pad(m) + "m " + pad(sec) + "s";
+  }
+  var timer = setInterval(tick, 1000);
+  tick();
   document.querySelectorAll("[data-interest]").forEach(function(a){
     a.addEventListener("click", function(e){
       e.preventDefault();
