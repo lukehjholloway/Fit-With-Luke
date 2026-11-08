@@ -70,6 +70,12 @@
   .price.big{font-size:3.2rem}
   .price.big .was{font-size:1.6rem}
   .price.big small{font-size:1rem}
+  .start{display:inline-block;margin:0 0 16px;padding:7px 16px;border-radius:999px;background:linear-gradient(135deg,var(--gold),var(--orange));color:#111;font-weight:800;font-size:.9rem}
+  .gprice{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+  .boxed{display:inline-flex;flex-direction:column;align-items:center;padding:10px 18px 9px;border:2.5px solid var(--orange);border-radius:18px;line-height:1.05}
+  .boxed b{margin-top:6px;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text);font-weight:700}
+  .gprice .rest{font-size:1.15rem;font-weight:700;color:var(--text);line-height:1.25}
+  .gprice .rest small{font-size:.85rem;font-weight:500}
   .lifetime{display:inline-block;margin-top:8px;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);font-weight:700}
   footer{border-top:1px solid var(--line);padding:22px 0;text-align:center;color:var(--muted);font-size:.8rem}
 </style>
@@ -149,7 +155,8 @@
       <div class="tag">Dance Schools &amp; Groups</div>
       <h2>Online Group Training</h2>
       <p class="lead" style="margin-bottom:16px">Bring your Pupu 'Ori, Halau, Production Company, or dance school along to get the lower price!</p>
-      <div class="price">$97 – $107 <small>per dancer</small></div>
+      <div class="start">Next group starts December 1st</div>
+      <div class="price gprice"><span class="boxed">$97<b>Ta'utiare lifetime price</b></span><span class="rest">per dancer<br><small>rates run up to $107</small></span></div>
       <p class="note" style="margin-bottom:20px">Available worldwide. The more of your crew that joins, the better the rate.</p>
       <a class="btn btn-primary" href="#start" data-interest="Online Group Training">Bring Your Group</a>
       <p class="note" style="margin-top:22px;margin-bottom:0">Want to train in person as a group? Pricing depends on your location, and I'm able to travel worldwide.</p>
