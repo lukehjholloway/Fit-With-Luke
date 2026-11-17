@@ -3,321 +3,286 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Enrollment Countdown — Fit With Luke</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Lato:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+<title>Prepare To Perform — Cohort 2 | Fit With Luke</title>
+<meta name="description" content="A 3-month online group strength program for Polynesian dancers. Cohort 2 runs December 1, 2026 – February 28, 2027. $97/mo, limited spots.">
+
+<meta property="og:title" content="Prepare to Perform — Cohort 2 | Polynesian Dance Group Program">
+<meta property="og:description" content="Dream. Prepare. Perform. Cohort 2 runs Dec 1, 2026 – Feb 28, 2027. Limited-time group rate — $97/mo.">
+<meta property="og:image" content="https://fitwithluke.com/group-training/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://fitwithluke.com/group-training/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://fitwithluke.com/group-training/og-image.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Barlow+Condensed:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --orange: #FF6B00;
-    --gold: #C9A227;
-    --black: #0D0D0D;
-    --dark: #1A1A1A;
-    --white: #FFFFFF;
-    --off-white: #F8F8F8;
-    --mid-gray: #999999;
+  :root{
+    --black:#0a0a0a;
+    --dark:#0f0f0f;
+    --card:#161616;
+    --border:#222;
+    --orange:#f97316;
+    --orange-dim:#ea6a0a;
+    --gold:#f5c842;
+    --green:#4CD964;
+    --red:#FF4C4C;
+    --white:#ffffff;
+    --text:#f0ede8;
+    --text2:#a09890;
+    --muted:#5a5550;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--black);color:var(--text);font-family:'Barlow',sans-serif;overflow-x:hidden;padding-bottom:86px;}
+  a{color:inherit;}
+  img,video{max-width:100%;display:block;}
+
+  /* NAV */
+  nav{
+    position:sticky;top:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:1rem 2rem;background:rgba(10,10,10,.92);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:3px;text-decoration:none;}
+  .nav-links{display:flex;align-items:center;gap:1.6rem;}
+  .nav-links a{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.92rem;text-transform:uppercase;letter-spacing:.5px;text-decoration:none;color:var(--text2);transition:color .15s;}
+  .nav-links a:hover{color:var(--white);}
+  .nav-links a.here{color:var(--orange);}
+  .nav-links a.nav-cta{background:var(--orange);color:#fff;padding:.55rem 1.3rem;border-radius:4px;}
+  .nav-links a.nav-cta:hover{background:var(--orange-dim);color:#fff;}
+  .nav-mobile-btn{display:none;background:none;border:0;color:var(--white);font-size:1.4rem;cursor:pointer;}
+  @media(max-width:760px){
+    .nav-links{display:none;}
+    .nav-mobile-btn{display:block;}
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  /* HERO */
+  .hero{padding:4.5rem 1.5rem 3rem;text-align:center;position:relative;}
+  .hero::before{
+    content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+    width:900px;height:900px;background:radial-gradient(circle,rgba(249,115,22,.12) 0%,rgba(245,200,66,.06) 40%,transparent 70%);
+    pointer-events:none;z-index:0;
+  }
+  .hero-inner{position:relative;z-index:1;max-width:760px;margin:0 auto;}
+  .eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:1.1rem;}
+  .hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.6rem,7vw,4.6rem);line-height:1.02;letter-spacing:1px;margin-bottom:.9rem;}
+  .hero-title span{color:var(--orange);}
+  .tagline{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--text2);font-size:.95rem;margin-bottom:1.6rem;}
+  .lede{font-size:1.08rem;color:var(--text2);line-height:1.65;max-width:600px;margin:0 auto 2.2rem;}
+  .lede strong{color:var(--white);}
+  .lede .hl-red{color:var(--red);font-weight:700;}
+  .lede .hl-green{color:var(--green);font-weight:700;}
 
-  body {
-    background: var(--black);
-    font-family: 'Lato', sans-serif;
-    color: var(--white);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 60px 20px;
-  }
+  /* COUNTDOWN */
+  .countdown-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:2.2rem 1.5rem;max-width:620px;margin:0 auto;}
+  .countdown-head{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:1px;margin-bottom:.4rem;}
+  .countdown-head span{color:var(--orange);}
+  .countdown-sub{font-size:.92rem;color:var(--text2);margin-bottom:1.6rem;}
+  .countdown-sub strong{color:var(--white);}
+  .rings-row{display:flex;justify-content:center;gap:1.4rem;flex-wrap:wrap;}
+  .ring-unit{display:flex;flex-direction:column;align-items:center;}
+  .ring{width:88px;height:88px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;
+    background:conic-gradient(var(--ring-color,var(--orange)) calc(var(--pct,0) * 1%), rgba(255,255,255,.08) 0);transition:background .6s linear;}
+  .ring::before{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--card);}
+  .ring-num{position:relative;z-index:1;font-family:'Bebas Neue',sans-serif;font-size:1.7rem;font-variant-numeric:tabular-nums;}
+  .ring-label{font-size:.65rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:.5rem;}
+  .is-closed .countdown-open{display:none;}
+  .closed-message{display:none;}
+  .is-closed .closed-message{display:block;}
 
-  .countdown-section {
-    width: 100%;
-    max-width: 900px;
-    text-align: center;
-    position: relative;
-  }
+  /* TIER CARD */
+  .tier-section{padding:3.5rem 1.5rem;max-width:560px;margin:0 auto;}
+  .tier{background:linear-gradient(180deg,var(--card),var(--dark));border:1px solid var(--border);border-radius:16px;padding:2.4rem 2rem;text-align:center;}
+  .tier-badge{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--black);background:var(--gold);padding:.35rem .9rem;border-radius:3px;margin-bottom:1.2rem;}
+  .tier-price{font-family:'Bebas Neue',sans-serif;font-size:3.4rem;line-height:1;color:var(--white);}
+  .tier-price span{font-size:1.1rem;font-family:'Barlow Condensed',sans-serif;color:var(--text2);text-transform:uppercase;}
+  .tier-note{font-size:.85rem;color:var(--text2);margin:.5rem 0 1.8rem;}
+  .tier ul{list-style:none;text-align:left;margin:0 0 2rem;}
+  .tier li{font-size:.98rem;color:var(--text);padding:.55rem 0;border-bottom:1px solid var(--border);display:flex;gap:.6rem;}
+  .tier li:last-child{border-bottom:none;}
+  .tier li::before{content:"✓";color:var(--orange);font-weight:800;}
+  .cta-btn{display:inline-block;width:100%;background:var(--orange);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;padding:1rem 1rem;border-radius:6px;box-shadow:0 6px 24px rgba(249,115,22,.35);transition:background .18s,transform .15s;}
+  .cta-btn:hover{background:var(--orange-dim);transform:translateY(-2px);}
+  .cta-fine{font-size:.78rem;color:var(--muted);margin-top:.9rem;line-height:1.5;}
 
-  /* faint radial glow behind everything, like gym floor lighting */
-  .countdown-section::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 700px;
-    height: 700px;
-    transform: translate(-50%, -50%);
-    background: radial-gradient(circle, rgba(255,107,0,0.10) 0%, rgba(201,162,39,0.05) 40%, transparent 70%);
-    z-index: 0;
-    pointer-events: none;
-  }
+  /* TESTIMONIAL */
+  .testi-section{padding:1rem 1.5rem 3.5rem;max-width:720px;margin:0 auto;text-align:center;}
+  .section-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;}
+  .section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,4vw,2.6rem);margin-bottom:1.6rem;}
+  .testi{position:relative;border-radius:14px;overflow:hidden;background:#000;border:1px solid var(--border);}
+  .testi video{width:100%;max-height:70vh;object-fit:contain;background:#000;display:block;}
 
-  .content { position: relative; z-index: 1; }
+  /* STEPS */
+  .steps-section{padding:1rem 1.5rem 3.5rem;max-width:860px;margin:0 auto;text-align:center;}
+  .steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;text-align:left;margin-top:2rem;}
+  @media(max-width:700px){.steps-grid{grid-template-columns:1fr;}}
+  .step{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;}
+  .step-num{font-family:'Bebas Neue',sans-serif;color:var(--orange);font-size:1.8rem;line-height:1;margin-bottom:.6rem;}
+  .step h3{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:.4rem;}
+  .step p{font-size:.92rem;color:var(--text2);line-height:1.55;}
 
-  .eyebrow {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 16px;
-  }
+  /* FOOTER */
+  footer{padding:3rem 1.5rem 2rem;text-align:center;border-top:1px solid var(--border);}
+  footer .nav-logo{display:block;margin:0 auto .8rem;}
+  footer p{font-size:.85rem;color:var(--muted);}
+  footer a{color:var(--text2);text-decoration:none;}
+  footer a:hover{color:var(--orange);}
 
-  .headline {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 900;
-    font-size: clamp(30px, 5vw, 52px);
-    text-transform: uppercase;
-    letter-spacing: 0.01em;
-    line-height: 1.05;
-    margin-bottom: 8px;
+  /* STICKY CTA BAR */
+  .sticky-bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:60;
+    background:rgba(15,15,15,.97);backdrop-filter:blur(10px);border-top:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-between;gap:1rem;
+    padding:.8rem 1.4rem;
   }
-  .headline span { color: var(--orange); }
-
-  .deadline-sub {
-    font-size: 15px;
-    color: var(--mid-gray);
-    margin-bottom: 46px;
-  }
-  .deadline-sub strong { color: var(--white); font-weight: 700; }
-
-  .rings-row {
-    display: flex;
-    justify-content: center;
-    gap: 28px;
-    flex-wrap: wrap;
-    margin-bottom: 46px;
-  }
-
-  .ring-unit {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .ring {
-    width: 128px;
-    height: 128px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    background:
-      conic-gradient(var(--ring-color, var(--orange)) calc(var(--pct, 0) * 1%), rgba(255,255,255,0.08) 0);
-    transition: background 0.6s linear;
-  }
-  .ring::before {
-    content: "";
-    position: absolute;
-    inset: 9px;
-    border-radius: 50%;
-    background: var(--black);
-  }
-  .ring-inner {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .ring-number {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 900;
-    font-size: 40px;
-    line-height: 1;
-    color: var(--white);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .ring-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--mid-gray);
-    margin-top: 12px;
-  }
-
-  .ring-unit[data-unit="seconds"] .ring-number {
-    color: var(--orange);
-  }
-
-  .cta-btn {
-    display: inline-block;
-    background: var(--orange);
-    color: var(--white);
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 18px;
-    font-weight: 800;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    text-decoration: none;
-    padding: 16px 44px;
-    border-radius: 4px;
-    box-shadow: 0 4px 20px rgba(255,107,0,0.35);
-    transition: background 0.18s, transform 0.15s, box-shadow 0.18s;
-  }
-  .cta-btn:hover {
-    background: #e05e00;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(255,107,0,0.45);
-  }
-
-  .cta-sub {
-    font-size: 12px;
-    color: var(--mid-gray);
-    margin-top: 12px;
-    letter-spacing: 0.03em;
-  }
-
-  .cta-btn--whatsapp {
-    background: transparent;
-    border: 2px solid var(--gold);
-    color: var(--gold);
-    box-shadow: none;
-    padding: 14px 42px;
-  }
-  .cta-btn--whatsapp:hover {
-    background: var(--gold);
-    color: var(--black);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(201,162,39,0.35);
-  }
-
-  /* closed state */
-  .closed-message { display: none; }
-  .is-closed .content > *:not(.closed-message) { display: none; }
-  .is-closed .closed-message {
-    display: block;
-  }
-  .closed-message .eyebrow { color: var(--mid-gray); }
-  .closed-message .headline { color: var(--white); }
-  .closed-message .headline span { color: var(--mid-gray); }
-
-  @media (max-width: 560px) {
-    .rings-row { gap: 16px; }
-    .ring { width: 92px; height: 92px; }
-    .ring::before { inset: 7px; }
-    .ring-number { font-size: 28px; }
-    .ring-label { font-size: 9.5px; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .ring { transition: none; }
+  .sticky-bar-text{font-family:'Barlow Condensed',sans-serif;font-size:.85rem;color:var(--text2);line-height:1.3;}
+  .sticky-bar-text strong{color:var(--white);display:block;font-size:.95rem;}
+  .sticky-bar .cta-btn{width:auto;padding:.7rem 1.6rem;font-size:.9rem;white-space:nowrap;}
+  @media(max-width:520px){
+    .sticky-bar-text{display:none;}
   }
 </style>
 </head>
-<body>
+<body id="pageBody">
 
-<div class="countdown-section" id="countdownSection">
-  <div class="content">
+<nav>
+  <a href="https://fitwithluke.com/" class="nav-logo">FIT WITH LUKE</a>
+  <div class="nav-links">
+    <a href="https://fitwithluke.com/">Home</a>
+    <a href="https://fitwithluke.com/#services">Services</a>
+    <a href="https://fitwithluke.com/#about">About</a>
+    <a class="here" href="/group-training/">Polynesian Dance</a>
+  </div>
+  <button class="nav-mobile-btn" aria-label="Menu">☰</button>
+</nav>
 
+<section class="hero">
+  <div class="hero-inner">
     <div class="eyebrow">Fit With Luke &middot; Polynesian Dance Strength Training</div>
-    <h2 class="headline">Enrollment closes <span>Wednesday</span></h2>
-    <div class="deadline-sub">Doors close <strong>Wednesday, August 26 at 11:59 PM</strong> &mdash; after that, spots reopen with the next group.</div>
+    <h1 class="hero-title">Prepare To <span>Perform.</span></h1>
+    <div class="tagline">Dream &middot; Prepare &middot; Perform</div>
+    <p class="lede">
+      A 3-month online group strength program built for Polynesian dancers — improve your <strong>tifene</strong> and <strong>levels control</strong>, build real strength and confidence, and train alongside a community that gets it.
+      <br><br>
+      <strong>Cohort 2 runs December 1, 2026 – February 28, 2027.</strong>
+      This is a <span class="hl-red">limited-time</span>, <span class="hl-red">discounted</span> group rate at <span class="hl-green">$97/month</span> — less than half the cost of 1-on-1 coaching. Delivered fully online through the Everfit app, so you can train from anywhere.
+    </p>
 
-    <div class="rings-row">
-      <div class="ring-unit" data-unit="days">
-        <div class="ring" id="ringDays" style="--ring-color: var(--gold);">
-          <div class="ring-inner">
-            <span class="ring-number" id="numDays">00</span>
-          </div>
+    <div class="countdown-wrap" id="countdownSection">
+      <div class="countdown-open">
+        <div class="countdown-head">Enrollment closes <span>November 30</span></div>
+        <div class="countdown-sub">Doors close <strong>Monday, November 30 at 11:59 PM</strong> — spots are limited to keep group coaching personal.</div>
+        <div class="rings-row">
+          <div class="ring-unit"><div class="ring" id="ringDD" style="--ring-color:var(--gold);"><div class="ring-num" id="numDD">00</div></div><div class="ring-label">Days</div></div>
+          <div class="ring-unit"><div class="ring" id="ringHH" style="--ring-color:var(--gold);"><div class="ring-num" id="numHH">00</div></div><div class="ring-label">Hours</div></div>
+          <div class="ring-unit"><div class="ring" id="ringMM" style="--ring-color:var(--orange);"><div class="ring-num" id="numMM">00</div></div><div class="ring-label">Minutes</div></div>
+          <div class="ring-unit"><div class="ring" id="ringSS" style="--ring-color:var(--orange);"><div class="ring-num" id="numSS">00</div></div><div class="ring-label">Seconds</div></div>
         </div>
-        <div class="ring-label">Days</div>
       </div>
-
-      <div class="ring-unit" data-unit="hours">
-        <div class="ring" id="ringHours" style="--ring-color: var(--gold);">
-          <div class="ring-inner">
-            <span class="ring-number" id="numHours">00</span>
-          </div>
-        </div>
-        <div class="ring-label">Hours</div>
-      </div>
-
-      <div class="ring-unit" data-unit="minutes">
-        <div class="ring" id="ringMinutes" style="--ring-color: var(--orange);">
-          <div class="ring-inner">
-            <span class="ring-number" id="numMinutes">00</span>
-          </div>
-        </div>
-        <div class="ring-label">Minutes</div>
-      </div>
-
-      <div class="ring-unit" data-unit="seconds">
-        <div class="ring" id="ringSeconds" style="--ring-color: var(--orange);">
-          <div class="ring-inner">
-            <span class="ring-number" id="numSeconds">00</span>
-          </div>
-        </div>
-        <div class="ring-label">Seconds</div>
+      <div class="closed-message">
+        <div class="countdown-head">Enrollment is <span>closed</span></div>
+        <div class="countdown-sub">Cohort 2 has started. Message Luke on WhatsApp to ask about the next group.</div>
       </div>
     </div>
-
   </div>
+</section>
 
-  <div class="closed-message">
-    <div class="eyebrow">Fit With Luke &middot; Polynesian Dance Strength Training</div>
-    <h2 class="headline">Enrollment is <span>closed</span></h2>
-    <div class="deadline-sub">This group has started. Join the community to be the first to know when the next one opens.</div>
-    <a class="cta-btn cta-btn--whatsapp" href="https://tally.so/r/J90oeK" target="_blank">Join the Community</a>
-    <div class="cta-sub">Get notified the moment the next group opens</div>
+<section class="tier-section">
+  <div class="tier">
+    <div class="tier-badge">Cohort 2 &middot; Limited Spots</div>
+    <div class="tier-price">$97<span>/month</span></div>
+    <div class="tier-note">3-month group program &middot; Dec 1, 2026 – Feb 28, 2027</div>
+    <ul>
+      <li>2+ lower-body strength workouts per week, delivered through Everfit</li>
+      <li>Private community chat with other dancers in the program</li>
+      <li>Direct coaching &amp; accountability from Luke</li>
+      <li>Programming built around tifene &amp; levels control</li>
+      <li>No equipment required — bodyweight modifications included</li>
+    </ul>
+    <a class="cta-btn" href="https://buy.stripe.com/fZu4grahBfye0paejy2880A">Reserve Your Spot — $97/mo</a>
+    <div class="cta-fine">Secure checkout via Stripe. Right after payment, you'll get a short welcome form so Luke can set up your program before December 1.</div>
   </div>
+</section>
+
+<section class="testi-section">
+  <div class="section-eyebrow">See It For Yourself</div>
+  <h2 class="section-title">Look at a 32 Day Difference</h2>
+  <div class="testi">
+    <video controls playsinline preload="metadata" poster="testimonial-2-poster.jpg">
+      <source src="testimonial-2.mp4" type="video/mp4">
+    </video>
+  </div>
+</section>
+
+<section class="steps-section">
+  <div class="section-eyebrow">How It Works</div>
+  <h2 class="section-title">Getting Started</h2>
+  <div class="steps-grid">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Reserve Your Spot</h3>
+      <p>Pay the $97/mo group rate securely through Stripe. This locks in your spot in Cohort 2.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>Complete Your Welcome Form</h3>
+      <p>Right after payment, fill out a quick form so Luke has what he needs to build your Everfit program.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>Start December 1</h3>
+      <p>You'll be added to Everfit and the group chat before the cohort kicks off.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a href="https://fitwithluke.com/" class="nav-logo">FIT WITH LUKE</a>
+  <p>Questions? Message Luke on WhatsApp at <a href="https://wa.me/16198294812">+1 (619) 829-4812</a><br>
+  or on Instagram <a href="https://www.instagram.com/_lukeholloway/" target="_blank" rel="noopener">@_lukeholloway</a></p>
+</footer>
+
+<div class="sticky-bar">
+  <div class="sticky-bar-text"><strong>Prepare To Perform — Cohort 2</strong>Dec 1 – Feb 28 &middot; $97/mo &middot; Closes Nov 30</div>
+  <a class="cta-btn" href="https://buy.stripe.com/fZu4grahBfye0paejy2880A">Reserve Your Spot</a>
 </div>
 
 <script>
-  // Deadline: Wednesday, August 26, 2026, 11:59 PM Pacific Time
-  const deadline = new Date("2026-08-26T23:59:00-07:00");
-
-  const els = {
-    days: document.getElementById('numDays'),
-    hours: document.getElementById('numHours'),
-    minutes: document.getElementById('numMinutes'),
-    seconds: document.getElementById('numSeconds'),
-    ringDays: document.getElementById('ringDays'),
-    ringHours: document.getElementById('ringHours'),
-    ringMinutes: document.getElementById('ringMinutes'),
-    ringSeconds: document.getElementById('ringSeconds'),
-  };
-
-  const section = document.getElementById('countdownSection');
-
-  function pad(n) { return String(n).padStart(2, '0'); }
-
-  function update() {
-    const now = new Date();
-    const diff = deadline - now;
-
-    if (diff <= 0) {
-      section.classList.add('is-closed');
-      clearInterval(timer);
-      return;
+  document.querySelector('.nav-mobile-btn').addEventListener('click', function(){
+    var links = document.querySelector('.nav-links');
+    if (links.style.display === 'flex') { links.style.display = 'none'; }
+    else {
+      links.style.cssText = 'display:flex;flex-direction:column;position:fixed;top:60px;left:0;right:0;background:rgba(10,10,10,.98);padding:1.5rem;gap:1.2rem;border-bottom:1px solid #222;z-index:70;';
     }
+  });
 
-    const totalSeconds = Math.floor(diff / 1000);
-    const days = Math.floor(totalSeconds / 86400);
-    const hours = Math.floor((totalSeconds % 86400) / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-
-    els.days.textContent = pad(days);
-    els.hours.textContent = pad(hours);
-    els.minutes.textContent = pad(minutes);
-    els.seconds.textContent = pad(seconds);
-
-    // Ring fill: each ring shows progress remaining within its own cycle,
-    // like an interval timer counting down (full ring = just started, empty = about to tick over)
-    els.ringDays.style.setProperty('--pct', Math.min(100, (days / 7) * 100));
-    els.ringHours.style.setProperty('--pct', (hours / 24) * 100);
-    els.ringMinutes.style.setProperty('--pct', (minutes / 60) * 100);
-    els.ringSeconds.style.setProperty('--pct', (seconds / 60) * 100);
+  // Deadline: Monday, November 30, 2026, 11:59 PM Pacific Time (PST, UTC-8)
+  var DEADLINE = new Date("2026-12-01T07:59:00Z");
+  var els = {
+    dd: document.getElementById('numDD'), hh: document.getElementById('numHH'),
+    mm: document.getElementById('numMM'), ss: document.getElementById('numSS'),
+    ringDD: document.getElementById('ringDD'), ringHH: document.getElementById('ringHH'),
+    ringMM: document.getElementById('ringMM'), ringSS: document.getElementById('ringSS')
+  };
+  var section = document.getElementById('countdownSection');
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function tick(){
+    var left = DEADLINE - new Date();
+    if (left <= 0){ section.classList.add('is-closed'); return false; }
+    var s = Math.floor(left/1000);
+    var days = Math.floor(s/86400), hours = Math.floor(s%86400/3600), mins = Math.floor(s%3600/60), secs = s%60;
+    els.dd.textContent = pad(days); els.hh.textContent = pad(hours);
+    els.mm.textContent = pad(mins); els.ss.textContent = pad(secs);
+    els.ringDD.style.setProperty('--pct', Math.min(100,(days/7)*100));
+    els.ringHH.style.setProperty('--pct', (hours/24)*100);
+    els.ringMM.style.setProperty('--pct', (mins/60)*100);
+    els.ringSS.style.setProperty('--pct', (secs/60)*100);
+    return true;
   }
-
-  let timer;
-  update();
-  timer = setInterval(update, 1000);
+  if (tick()) setInterval(tick, 1000);
 </script>
 
 </body>
