@@ -110,6 +110,10 @@
   .cta-btn{display:inline-block;width:100%;background:var(--orange);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;padding:1rem 1rem;border-radius:6px;box-shadow:0 6px 24px rgba(249,115,22,.35);transition:background .18s,transform .15s;}
   .cta-btn:hover{background:var(--orange-dim);transform:translateY(-2px);}
   .cta-fine{font-size:.78rem;color:var(--muted);margin-top:.9rem;line-height:1.5;}
+  .cta-btn--outline{display:inline-block;width:100%;background:transparent;border:2px solid var(--gold);color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;padding:.85rem 1rem;border-radius:6px;transition:background .18s,color .18s,transform .15s;margin-top:1rem;}
+  .cta-btn--outline:hover{background:var(--gold);color:var(--black);transform:translateY(-2px);}
+  .cta-divider{display:flex;align-items:center;gap:.8rem;margin:1.6rem 0 0;color:var(--muted);font-size:.78rem;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.1em;}
+  .cta-divider::before,.cta-divider::after{content:"";flex:1;height:1px;background:var(--border);}
 
   /* TESTIMONIAL */
   .testi-section{padding:1rem 1.5rem 3.5rem;max-width:720px;margin:0 auto;text-align:center;}
@@ -189,7 +193,8 @@
       </div>
       <div class="closed-message">
         <div class="countdown-head">Enrollment is <span>closed</span></div>
-        <div class="countdown-sub">Cohort 2 has started. Message Luke on WhatsApp to ask about the next group.</div>
+        <div class="countdown-sub">Cohort 2 has started. Join the free community to chat with Luke and get notified the moment the next group opens.</div>
+        <a class="cta-btn--outline" href="https://tally.so/r/J90oeK" target="_blank" rel="noopener">Join the Free Community</a>
       </div>
     </div>
   </div>
@@ -209,6 +214,10 @@
     </ul>
     <a class="cta-btn" href="https://buy.stripe.com/fZu4grahBfye0paejy2880A">Reserve Your Spot — $97/mo</a>
     <div class="cta-fine">Secure checkout via Stripe. Right after payment, you'll get a short welcome form so Luke can set up your program before December 1.</div>
+
+    <div class="cta-divider">or</div>
+    <a class="cta-btn--outline" href="https://tally.so/r/J90oeK" target="_blank" rel="noopener">Can't Join This Time? Join the Free Community</a>
+    <div class="cta-fine">Fill out a quick form to join Luke's free community chat and get notified the moment the next group opens.</div>
   </div>
 </section>
 
